@@ -1,0 +1,67 @@
+Total number of currently running services:0
+AGGREGATED OVER LAST 24 HOURS:
+Per-Package Stats:
+  * com.layoutstry.android.trythisloyout / u0a64:
+      * com.layoutstry.android.trythisloyout / u0a64:
+               TOTAL: 27% (13MB-16MB-18MB/9.0MB-10MB-11MB over 81)
+                 Top: 27% (13MB-16MB-18MB/9.0MB-10MB-11MB over 79)
+              Imp Fg: 0.37% (13MB-13MB-13MB/11MB-11MB-11MB over 2)
+          (Last Act): 0.11%
+            (Cached): 21% (11MB-12MB-13MB/9.0MB-9.9MB-10MB over 12)
+
+Summary:
+  * com.layoutstry.android.trythisloyout / u0a64:
+           TOTAL: 27% (13MB-16MB-18MB/9.0MB-10MB-11MB over 81)
+             Top: 27% (13MB-16MB-18MB/9.0MB-10MB-11MB over 79)
+          Imp Fg: 0.37% (13MB-13MB-13MB/11MB-11MB-11MB over 2)
+      (Last Act): 0.11%
+        (Cached): 21% (11MB-12MB-13MB/9.0MB-9.9MB-10MB over 12)
+
+Run time Stats:
+  SOn /Norm: +6h41m58s130ms
+      TOTAL: +6h41m58s130ms
+
+          Start time: 2015-05-30 17:16:17
+  Total elapsed time: +6h44m0s420ms (partial) libdvm.so chromeview
+
+AGGREGATED OVER LAST 3 HOURS:
+Per-Package Stats:
+  * com.layoutstry.android.trythisloyout / u0a64:
+      * com.layoutstry.android.trythisloyout / u0a64:
+               TOTAL: 38% (14MB-17MB-18MB/9.0MB-11MB-11MB over 23)
+                 Top: 38% (14MB-17MB-18MB/9.0MB-11MB-11MB over 23)
+            (Cached): 14% (11MB-12MB-13MB/9.1MB-9.6MB-10MB over 3)
+
+Summary:
+  * com.layoutstry.android.trythisloyout / u0a64:
+           TOTAL: 38% (14MB-17MB-18MB/9.0MB-11MB-11MB over 23)
+             Top: 38% (14MB-17MB-18MB/9.0MB-11MB-11MB over 23)
+        (Cached): 14% (11MB-12MB-13MB/9.1MB-9.6MB-10MB over 3)
+
+Run time Stats:
+  SOn /Norm: +1h42m54s900ms
+      TOTAL: +1h42m54s900ms
+
+          Start time: 2015-06-06 12:56:22
+  Total elapsed time: +1h43m39s430ms (partial) libdvm.so chromeview
+
+CURRENT STATS:
+Per-Package Stats:
+  * com.layoutstry.android.trythisloyout / u0a64:
+      * com.layoutstry.android.trythisloyout / u0a64:
+               TOTAL: 3.2% (14MB-14MB-14MB/9.0MB-9.0MB-9.0MB over 1)
+                 Top: 3.2% (14MB-14MB-14MB/9.0MB-9.0MB-9.0MB over 1)
+            (Cached): 9.8% (11MB-11MB-12MB/9.1MB-9.3MB-9.5MB over 2)
+
+Summary:
+  * com.layoutstry.android.trythisloyout / u0a64:
+           TOTAL: 3.2% (14MB-14MB-14MB/9.0MB-9.0MB-9.0MB over 1)
+             Top: 3.2% (14MB-14MB-14MB/9.0MB-9.0MB-9.0MB over 1)
+        (Cached): 9.8% (11MB-11MB-12MB/9.1MB-9.3MB-9.5MB over 2)
+
+Run time Stats:
+  SOn /Norm: +13m11s820ms (running)
+      TOTAL: +13m11s820ms
+
+          Start time: 2015-06-18 11:38:12
+  Total elapsed time: +13m36s690ms (partial) libdvm.so chromeview

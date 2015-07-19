@@ -1,0 +1,33 @@
+Total number of currently running services:0
+Applications Memory Usage (kB):
+Uptime: 84091050 Realtime: 84091050
+
+** MEMINFO in pid 11317 [com.layoutstry.android.trythisloyout] **
+                   Pss  Private  Private  Swapped     Heap     Heap     Heap
+                 Total    Dirty    Clean    Dirty     Size    Alloc     Free
+                ------   ------   ------   ------   ------   ------   ------
+  Native Heap     4128     4068        0        0     5584     5239       52
+  Dalvik Heap     2759     2612        0        0     4248     3671      577
+ Dalvik Other     1187      968        0        0                           
+        Stack       64       64        0        0                           
+    Other dev        5        0        4        0                           
+     .so mmap     1519      136       64        0                           
+    .apk mmap       87        0        8        0                           
+    .ttf mmap       87        0       64        0                           
+    .dex mmap     1579       32     1216        0                           
+   Other mmap        8        4        0        0                           
+      Unknown       48       48        0        0                           
+        TOTAL    11471     7932     1356        0     9832     8910      629
+ 
+ Objects
+               Views:       29         ViewRootImpl:        1
+         AppContexts:        3           Activities:        1
+              Assets:        2        AssetManagers:        2
+       Local Binders:        7        Proxy Binders:       14
+    Death Recipients:        0
+     OpenSSL Sockets:        0
+ 
+ SQL
+         MEMORY_USED:        0
+  PAGECACHE_OVERFLOW:        0          MALLOC_SIZE:        0
+ 

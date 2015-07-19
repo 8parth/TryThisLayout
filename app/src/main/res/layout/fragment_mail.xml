@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#B70CE8"
+    android:gravity="center"
+    tools:context="com.android.navigationdrawer.MainActivity$HomeFragment" >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="working on it!"
+        android:textColor="#ffffff"
+        android:textSize="20sp"
+        android:textStyle="bold|italic"/>
+
+</LinearLayout>
