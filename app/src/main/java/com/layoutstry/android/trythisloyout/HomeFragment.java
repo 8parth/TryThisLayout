@@ -27,6 +27,8 @@ import java.util.Locale;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static com.layoutstry.android.trythisloyout.ContactsManagerContract.ContactsEntry.COLUMN_NAME_OTHER;
+import static com.layoutstry.android.trythisloyout.ContactsManagerContract.ContactsEntry.TABLE_NAME;
 
 
 public class HomeFragment extends Fragment {
@@ -104,20 +106,30 @@ public class HomeFragment extends Fragment {
         // Setting adapter to the listview
         lstContacts.setAdapter(myAdapter);
 
-        // Creating an AsyncTask object to retrieve and load listview with contacts
-        ListViewContactsLoader listViewContactsLoader = new ListViewContactsLoader();
 
         //To access your database, instantiate your subclass of SQLiteOpenHelper
-        contactsManagerHelper = new ContactsManagerHelper(context);
-        if (isDBExist(ContactsManagerContract.ContactsEntry.TABLE_NAME)) {
-            Toast.makeText(context, ContactsManagerContract.ContactsEntry.TABLE_NAME + " already exists!", Toast.LENGTH_SHORT).show();
+        //contactsManagerHelper = new ContactsManagerHelper(context);
+        if (!isDBExist(TABLE_NAME)) {
+
+
+
+            // Creating an AsyncTask object to retrieve and load listview with contacts
+            ListViewContactsLoader listViewContactsLoader = new ListViewContactsLoader();
+            home_spinner = (ProgressBar) rootView.findViewById(R.id.home_progressbar);
+            // Starting the AsyncTask process to retrieve and load listview with contacts
+            listViewContactsLoader.execute();
+
+            Toast.makeText(context, TABLE_NAME + " does not exist!", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(context, ContactsManagerContract.ContactsEntry.TABLE_NAME + " does not exist!", Toast.LENGTH_SHORT).show();
+
+            DBContactsLoader contactsLoader = new DBContactsLoader();
+            home_spinner = (ProgressBar) rootView.findViewById(R.id.home_progressbar);
+            contactsLoader.execute();
+
+            Toast.makeText(context, TABLE_NAME + " already exists!", Toast.LENGTH_SHORT).show();
+
         }
 
-        home_spinner = (ProgressBar) rootView.findViewById(R.id.home_progressbar);
-        // Starting the AsyncTask process to retrieve and load listview with contacts
-        listViewContactsLoader.execute();
         return rootView;
     }
 
@@ -142,12 +154,23 @@ public class HomeFragment extends Fragment {
     }
 
     private boolean isDBExist(String name) {
-        return context.getDatabasePath(name).exists();
+        //File file = new File(context.getDatabasePath(TABLE_NAME));
+        //return context.getDatabasePath("contacts_db.db").exists();
+        //String DB_PATH = "/data/data/" + context.getPackageName() + "/databases/";
+        /*File database =  context.getApplicationContext().getDatabasePath("ContactsManager.db");
+        if(database.exists()) {
+            return true;
+        } else {
+            return false;
+        }
+        */
+        return context.getApplicationContext().getDatabasePath("ContactsManager.db").exists();
     }
 
     private class ListViewContactsLoader extends AsyncTask<Void, Void, Cursor> {
         protected Cursor doInBackground(Void... Params) {
             Uri contactsUri = ContactsContract.Contacts.CONTENT_URI;
+            contactsManagerHelper = new ContactsManagerHelper(context);
             db = contactsManagerHelper.getWritableDatabase();
             ContentValues values = new ContentValues();
 
@@ -326,11 +349,15 @@ public class HomeFragment extends Fragment {
                                 isPhone = true;
                             }
                             values.put(ContactsManagerContract.ContactsEntry.COLUMN_NAME_ANNIE, anniversary);
-                            values.put(ContactsManagerContract.ContactsEntry.COLUMN_NAME_OTHER, other);
+                            values.put(COLUMN_NAME_OTHER, other);
 
+                            String[] nullbaleFields = {
+                                    ContactsManagerContract.ContactsEntry.COLUMN_NAME_ANNIE,
+                                    COLUMN_NAME_OTHER
+                            };
                             db.insert(
-                                    ContactsManagerContract.ContactsEntry.TABLE_NAME,
-                                    null,
+                                    TABLE_NAME,
+                                    COLUMN_NAME_OTHER,
                                     values
                             );
 
@@ -345,6 +372,7 @@ public class HomeFragment extends Fragment {
                 } while (contactsCursor.moveToNext());
                 myMatrixCursor.close();
                 contactsCursor.close();
+                db.close();
             }
 
 
@@ -370,10 +398,11 @@ public class HomeFragment extends Fragment {
 
         @Override
         protected Cursor doInBackground(Void... voids) {
+            contactsManagerHelper = new ContactsManagerHelper(context);
             db = contactsManagerHelper.getReadableDatabase();
             String sortOrder = ContactsManagerContract.ContactsEntry.COLUMN_NAME_NAME + " ASC";
             Cursor cursor = db.query(
-                    ContactsManagerContract.ContactsEntry.TABLE_NAME,
+                    TABLE_NAME,
                     null,
                     null,
                     null,
@@ -415,6 +444,7 @@ public class HomeFragment extends Fragment {
         protected void onPostExecute(Cursor result) {
             // Setting the cursor containing contacts to listview
             home_spinner.setVisibility(GONE);
+
             myAdapter.swapCursor(result);
 
         }
