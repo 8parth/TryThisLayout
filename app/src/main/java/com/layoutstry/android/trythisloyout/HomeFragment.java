@@ -15,6 +15,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -37,7 +40,7 @@ public class HomeFragment extends Fragment {
      */
     public View v;
     public Boolean isBirthday = false;
-    SimpleCursorAdapter myAdapter;
+    SimpleCursorAdapter myAdapter,myAdapterRefresh;
     MatrixCursor myMatrixCursor;
     String displayName;
     String homePhone;
@@ -56,9 +59,11 @@ public class HomeFragment extends Fragment {
     SQLiteDatabase db;
     private ProgressBar home_spinner;
     View rootView;
-    public HomeFragment() {
+    boolean bool_adapter;
+    MatrixCursor myMatrixCursorRefresh;
+    ListView lstContacts;
 
-    }
+    public HomeFragment() { }
 
     public static HomeFragment newInstance() {
         return new HomeFragment();
@@ -69,6 +74,7 @@ public class HomeFragment extends Fragment {
         super.onCreate(savedInstanceState);
         activity = getActivity();
         context = activity.getApplicationContext();
+        setHasOptionsMenu(true);
     }
 
     @Nullable
@@ -76,6 +82,7 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_home, container, false);
         v = rootView;
+        bool_adapter = true;
         // The contacts from the contacts content provider is stored in this cursor
         myMatrixCursor = new MatrixCursor(new String[]{
                 "_id",
@@ -101,11 +108,11 @@ public class HomeFragment extends Fragment {
 
 
         // Getting reference to the listview
-        ListView lstContacts = (ListView) rootView.findViewById(R.id.home_contacts_list);
+
+        lstContacts = (ListView) rootView.findViewById(R.id.home_contacts_list);
 
         // Setting adapter to the listview
         lstContacts.setAdapter(myAdapter);
-
 
         //To access your database, instantiate your subclass of SQLiteOpenHelper
         //contactsManagerHelper = new ContactsManagerHelper(context);
@@ -153,18 +160,68 @@ public class HomeFragment extends Fragment {
         ((MainActivity) activity).onSectionAttached(1);
     }
 
-    private boolean isDBExist(String name) {
-        //File file = new File(context.getDatabasePath(TABLE_NAME));
-        //return context.getDatabasePath("contacts_db.db").exists();
-        //String DB_PATH = "/data/data/" + context.getPackageName() + "/databases/";
-        /*File database =  context.getApplicationContext().getDatabasePath("ContactsManager.db");
-        if(database.exists()) {
-            return true;
-        } else {
-            return false;
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.homefragment_refresh, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // handle item selection
+        switch (item.getItemId()) {
+            case R.id.action_refresh:
+                updateDB();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        */
-        return context.getApplicationContext().getDatabasePath("ContactsManager.db").exists();
+    }
+    private boolean isDBExist(String name) {
+
+        return context.getDatabasePath("ContactsManager.db").exists();
+    }
+
+    private void updateDB(){
+        db = contactsManagerHelper.getWritableDatabase();
+        //closing all connections to the database
+        contactsManagerHelper.close();
+        db.close();
+
+        //deleting database
+        context.deleteDatabase("ContactsManager.db");
+
+        ////
+
+        myMatrixCursorRefresh = new MatrixCursor(new String[]{
+                "_id",
+                "name",
+                //"photo",
+                "details"});
+        myAdapter = null;
+        myAdapterRefresh = new SimpleCursorAdapter(
+                activity,
+                R.layout.home_lv_layout,
+                null,
+                new String[]{
+                        "name",
+                        //"photo",
+                        "details"
+                },
+                new int[]{
+                        R.id.home_tv_name,
+                        //R.id.iv_photo,
+                        R.id.home_tv_details},
+                0);
+
+        lstContacts.setAdapter(myAdapterRefresh);
+        bool_adapter = false;
+
+        // Creating an AsyncTask object to retrieve and load listview with contacts
+        ListViewContactsLoader listViewContactsLoader = new ListViewContactsLoader();
+        home_spinner = (ProgressBar) rootView.findViewById(R.id.home_progressbar);
+        // Starting the AsyncTask process to retrieve and load listview with contacts
+        listViewContactsLoader.execute();
     }
 
     private class ListViewContactsLoader extends AsyncTask<Void, Void, Cursor> {
@@ -316,13 +373,7 @@ public class HomeFragment extends Fragment {
                         if (workPhone != null && !workPhone.equals("")) {
                             details += "WorkPhone : " + workPhone + "\n";
 
-                            //in db only two number of support is added. workPhone has to be implemented
 
-                            /*if (!isPhone) {
-                                if (isPhone) {
-                                    values.put(ContactsManagerContract.ContactsEntry.COLUMN_NAME_NUMBER, workPhone);
-                                }
-                            }*/
                         }
                         if (birthdate != null && !birthdate.equals("")) {
                             details += "Birthdate : " + birthdate + "\n";
@@ -351,32 +402,43 @@ public class HomeFragment extends Fragment {
                             values.put(ContactsManagerContract.ContactsEntry.COLUMN_NAME_ANNIE, anniversary);
                             values.put(COLUMN_NAME_OTHER, other);
 
-                            String[] nullbaleFields = {
-                                    ContactsManagerContract.ContactsEntry.COLUMN_NAME_ANNIE,
-                                    COLUMN_NAME_OTHER
-                            };
                             db.insert(
                                     TABLE_NAME,
                                     COLUMN_NAME_OTHER,
                                     values
                             );
+                            if(!bool_adapter){
+                                myMatrixCursorRefresh.addRow(new Object[]{
+                                        Long.toString(contactId),
+                                        displayName,
+                                        details
+                                });
 
-                            myMatrixCursor.addRow(new Object[]{
-                                    Long.toString(contactId),
-                                    displayName,
-                                    //photoPath,
-                                    details});
+                                //bool_adapter = true;
+                            }else {
+
+                                myMatrixCursor.addRow(new Object[]{
+                                        Long.toString(contactId),
+                                        displayName,
+                                        //photoPath,
+                                        details});
+                            }
                         }
 
                     }
                 } while (contactsCursor.moveToNext());
-                myMatrixCursor.close();
+
+
                 contactsCursor.close();
+
                 db.close();
             }
 
-
-            return myMatrixCursor;
+            if(!bool_adapter){
+                return myMatrixCursorRefresh;
+            }else {
+                return myMatrixCursor;
+            }
         }
 
         @Override
@@ -387,10 +449,19 @@ public class HomeFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Cursor result) {
+            //myAdapter.notifyDataSetChanged();
             // Setting the cursor containing contacts to listview
             home_spinner.setVisibility(GONE);
-            myAdapter.swapCursor(result);
+            if(!bool_adapter){
+                myMatrixCursorRefresh.close();
+                myAdapterRefresh.swapCursor(result);
 
+            }else {
+
+                myMatrixCursor.close();
+                myAdapter.swapCursor(result);
+            }
+            bool_adapter = true;
         }
     }
 
@@ -422,7 +493,7 @@ public class HomeFragment extends Fragment {
                         .getColumnIndexOrThrow(ContactsManagerContract.ContactsEntry.COLUMN_NAME_BIRTHDAY));
                 String annie = cursor.getString(cursor
                         .getColumnIndexOrThrow(ContactsManagerContract.ContactsEntry.COLUMN_NAME_ANNIE));
-                //String det = "Birthdate : " + bday + "\n" +"Annieversary: " +annie;
+
                 myMatrixCursor.addRow(new Object[]{
                         Long.toString(Id),
                         name,
@@ -431,6 +502,7 @@ public class HomeFragment extends Fragment {
             } while (cursor.moveToNext());
             cursor.close();
             db.close();
+
             return myMatrixCursor;
         }
 
@@ -442,9 +514,11 @@ public class HomeFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Cursor result) {
+
             // Setting the cursor containing contacts to listview
             home_spinner.setVisibility(GONE);
 
+            myAdapter.notifyDataSetChanged();
             myAdapter.swapCursor(result);
 
         }
