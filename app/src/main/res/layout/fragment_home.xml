@@ -1,32 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.SwipeRefreshLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/swiperefresh_home"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#a7c6e2"
     android:gravity="top"
     tools:context="com.android.navigationdrawer.MainActivity$HomeFragment">
 
- <!--   <ProgressBar
+    <ProgressBar
         android:id="@+id/home_progressbar"
 
         style="?android:attr/progressBarStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true" />-->
+        android:layout_centerInParent="true" />
 
-   <!-- <android.support.v4.widget.SwipeRefreshLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#a7c6e2"
-        android:gravity="top">-->
 
-        <ListView
-            android:id="@+id/home_contacts_list"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-<!--
-    </android.support.v4.widget.SwipeRefreshLayout>-->
-</android.support.v4.widget.SwipeRefreshLayout>
+    <ListView
+        android:id="@+id/home_contacts_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+
+</RelativeLayout>

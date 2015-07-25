@@ -14,7 +14,6 @@ import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SimpleCursorAdapter;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,6 +28,8 @@ import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import static com.layoutstry.android.trythisloyout.ContactsManagerContract.ContactsEntry.COLUMN_NAME_OTHER;
 import static com.layoutstry.android.trythisloyout.ContactsManagerContract.ContactsEntry.TABLE_NAME;
 
@@ -61,7 +62,6 @@ public class HomeFragment extends Fragment {
     boolean bool_adapter;
     MatrixCursor myMatrixCursorRefresh;
     ListView lstContacts;
-    SwipeRefreshLayout mySwipeRefreshLayout;
 
     public HomeFragment() { }
 
@@ -116,24 +116,24 @@ public class HomeFragment extends Fragment {
 
         //To access your database, instantiate your subclass of SQLiteOpenHelper
         //contactsManagerHelper = new ContactsManagerHelper(context);
-        if (!isDBExist(ContactsManagerHelper.DATABASE_NAME)) {
+        if (!isDBExist(TABLE_NAME)) {
 
 
 
             // Creating an AsyncTask object to retrieve and load listview with contacts
             ListViewContactsLoader listViewContactsLoader = new ListViewContactsLoader();
-            //home_spinner = (ProgressBar) rootView.findViewById(R.id.home_progressbar);
+            home_spinner = (ProgressBar) rootView.findViewById(R.id.home_progressbar);
             // Starting the AsyncTask process to retrieve and load listview with contacts
             listViewContactsLoader.execute();
 
-            Toast.makeText(context, ContactsManagerHelper.DATABASE_NAME + " does not exist!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, TABLE_NAME + " does not exist!", Toast.LENGTH_SHORT).show();
         } else {
 
             DBContactsLoader contactsLoader = new DBContactsLoader();
-            //home_spinner = (ProgressBar) rootView.findViewById(R.id.home_progressbar);
+            home_spinner = (ProgressBar) rootView.findViewById(R.id.home_progressbar);
             contactsLoader.execute();
 
-            Toast.makeText(context, ContactsManagerHelper.DATABASE_NAME + " already exists!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, TABLE_NAME + " already exists!", Toast.LENGTH_SHORT).show();
 
         }
 
@@ -152,28 +152,6 @@ public class HomeFragment extends Fragment {
                                                     }
                                                 }
         );
-
-        //Swipe to refresh feature on listview
-        mySwipeRefreshLayout  = (SwipeRefreshLayout) activity.findViewById(R.id.swiperefresh_home);
-        //mySwipeRefreshLayout = new SwipeRefreshLayout(context);
-        mySwipeRefreshLayout.setOnRefreshListener(
-                new SwipeRefreshLayout.OnRefreshListener() {
-                    @Override
-                    public void onRefresh() {
-                        // This method performs the actual data-refresh operation.
-                        // The method calls setRefreshing(false) when it's finished.
-                        if(updateDB()){
-                            Toast.makeText(context, "DB updated in swipe", Toast.LENGTH_SHORT).show();
-
-                        }
-                    }
-                }
-        );
-
-        //Service process
-        //Intent mSearviceIntent = new Intent(activity, WisherManagerService.class);
-//        mSearviceIntent.setData(Uri.parse(uri));
-        //activity.startService(mSearviceIntent);
     }
 
     @Override
@@ -193,25 +171,24 @@ public class HomeFragment extends Fragment {
         // handle item selection
         switch (item.getItemId()) {
             case R.id.action_refresh:
-
-                return updateDB();
+                updateDB();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
-    public boolean isDBExist(String name) {
+    private boolean isDBExist(String name) {
 
-        return context.getDatabasePath(name).exists();
+        return context.getDatabasePath("ContactsManager.db").exists();
     }
 
-    private boolean updateDB(){
+    private void updateDB(){
         db = contactsManagerHelper.getWritableDatabase();
         //closing all connections to the database
         contactsManagerHelper.close();
         db.close();
 
         //deleting database
-
         context.deleteDatabase("ContactsManager.db");
 
         ////
@@ -242,11 +219,9 @@ public class HomeFragment extends Fragment {
 
         // Creating an AsyncTask object to retrieve and load listview with contacts
         ListViewContactsLoader listViewContactsLoader = new ListViewContactsLoader();
-        //home_spinner = (ProgressBar) rootView.findViewById(R.id.home_progressbar);
+        home_spinner = (ProgressBar) rootView.findViewById(R.id.home_progressbar);
         // Starting the AsyncTask process to retrieve and load listview with contacts
         listViewContactsLoader.execute();
-        mySwipeRefreshLayout.setRefreshing(false);
-        return true;
     }
 
     private class ListViewContactsLoader extends AsyncTask<Void, Void, Cursor> {
@@ -469,21 +444,17 @@ public class HomeFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-          //home_spinner.setVisibility(VISIBLE);
+            home_spinner.setVisibility(VISIBLE);
         }
 
         @Override
         protected void onPostExecute(Cursor result) {
             //myAdapter.notifyDataSetChanged();
             // Setting the cursor containing contacts to listview
-            //home_spinner.setVisibility(GONE);
-
+            home_spinner.setVisibility(GONE);
             if(!bool_adapter){
-
                 myMatrixCursorRefresh.close();
                 myAdapterRefresh.swapCursor(result);
-
-
 
             }else {
 
@@ -537,8 +508,7 @@ public class HomeFragment extends Fragment {
 
         @Override
         protected void onPreExecute() {
-            //home_spinner.setVisibility(VISIBLE);
-            //mySwipeRefreshLayout.setRefreshing(true);
+            home_spinner.setVisibility(VISIBLE);
             super.onPreExecute();
         }
 
@@ -546,18 +516,11 @@ public class HomeFragment extends Fragment {
         protected void onPostExecute(Cursor result) {
 
             // Setting the cursor containing contacts to listview
-            //home_spinner.setVisibility(GONE);
-            //mySwipeRefreshLayout.setRefreshing(false);
-            //myAdapter.notifyDataSetChanged();
+            home_spinner.setVisibility(GONE);
+
+            myAdapter.notifyDataSetChanged();
             myAdapter.swapCursor(result);
 
         }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-
     }
 }
