@@ -2,8 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.layoutstry.android.trythisloyout" >
 
-    <uses-permission android:name="android.permission.READ_CONTACTS"></uses-permission>
-
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <application
         android:allowBackup="true"
@@ -19,8 +18,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".ContactsDBFetcher"
+
+        <service
+            android:name=".WisherManagerService"
             android:exported="false" />
+
+        <activity
+            android:name=".WishNotificationActivity"
+            android:label="@string/title_activity_wish_notification" >
+        </activity>
     </application>
 
 </manifest>

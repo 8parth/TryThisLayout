@@ -43,6 +43,9 @@
     <string name="prefs_summary_days">Display birthdays in the next n days</string>
     <string name="prefs_summary_layout_settings">Adjust layout settings</string>
     <string name="prefs_summary_flip_interval">Flip to next contact every n seconds</string>
+    <string name="title_activity_wish_notification">WishNotificationActivity</string>
+
+    <string name="hello_world">Hello world!</string>
 
 
 </resources>

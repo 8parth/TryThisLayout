@@ -1,0 +1,163 @@
+Total number of currently running services:0
+AGGREGATED OVER LAST 24 HOURS:
+Per-Package Stats:
+  * com.android.providers.userdictionary / u0a4:
+      * android.process.acore / u0a4:
+               TOTAL: 9.6% (7.9MB-9.1MB-9.6MB/6.2MB-7.4MB-7.9MB over 19)
+                 Top: 0.80% (7.9MB-8.3MB-8.9MB/6.2MB-6.6MB-7.1MB over 3)
+              Imp Fg: 1.3% (8.5MB-9.0MB-9.5MB/6.7MB-7.3MB-7.9MB over 4)
+              Imp Bg: 0.01%
+             Service: 7.5% (8.5MB-9.4MB-9.6MB/6.9MB-7.7MB-7.9MB over 12)
+            Receiver: 0.07%
+            (Cached): 22% (7.1MB-7.7MB-9.2MB/5.3MB-5.9MB-7.4MB over 26)
+  * com.android.providers.contacts / u0a4:
+      * android.process.acore / u0a4:
+               TOTAL: 9.6% (7.9MB-9.1MB-9.6MB/6.2MB-7.4MB-7.9MB over 19)
+                 Top: 0.80% (7.9MB-8.3MB-8.9MB/6.2MB-6.6MB-7.1MB over 3)
+              Imp Fg: 1.3% (8.5MB-9.0MB-9.5MB/6.7MB-7.3MB-7.9MB over 4)
+              Imp Bg: 0.01%
+             Service: 7.5% (8.5MB-9.4MB-9.6MB/6.9MB-7.7MB-7.9MB over 12)
+            Receiver: 0.07%
+            (Cached): 22% (7.1MB-7.7MB-9.2MB/5.3MB-5.9MB-7.4MB over 26)
+      * com.android.providers.contacts.VoicemailCleanupService:
+        Process: android.process.acore
+            Running count 24 / time 0.07%
+            Started count 12 / time 0.06%
+          Executing count 24 / time 0.01%
+
+Multi-Package Common Processes:
+  * android.process.acore / u0a4 (6 entries):
+        SOn /Norm/Top    : +3m35s190ms
+                  ImpFg  : +5m41s980ms
+                  ImpBg  : +2s420ms
+                  Service: +33m43s590ms
+                  Receivr: +19s700ms
+                  CchEmty: +1h37m11s700ms
+                  TOTAL  : +2h20m34s580ms
+        PSS/USS (4 entries):
+          SOn /Norm/Top    : 3 samples 7.9MB 8.3MB 8.9MB / 6.2MB 6.6MB 7.1MB
+                    ImpFg  : 4 samples 8.5MB 9.0MB 9.5MB / 6.7MB 7.3MB 7.9MB
+                    Service: 12 samples 8.5MB 9.4MB 9.6MB / 6.9MB 7.7MB 7.9MB
+                    CchEmty: 26 samples 7.1MB 7.7MB 9.2MB / 5.3MB 5.9MB 7.4MB
+
+Summary:
+  * android.process.acore / u0a4:
+           TOTAL: 9.6% (7.9MB-9.1MB-9.6MB/6.2MB-7.4MB-7.9MB over 19)
+             Top: 0.80% (7.9MB-8.3MB-8.9MB/6.2MB-6.6MB-7.1MB over 3)
+          Imp Fg: 1.3% (8.5MB-9.0MB-9.5MB/6.7MB-7.3MB-7.9MB over 4)
+          Imp Bg: 0.01%
+         Service: 7.5% (8.5MB-9.4MB-9.6MB/6.9MB-7.7MB-7.9MB over 12)
+        Receiver: 0.07%
+        (Cached): 22% (7.1MB-7.7MB-9.2MB/5.3MB-5.9MB-7.4MB over 26)
+
+Run time Stats:
+  SOn /Norm: +7h30m49s50ms
+      TOTAL: +7h30m49s50ms
+
+          Start time: 2015-06-29 16:12:51
+  Total elapsed time: +7h33m0s550ms (partial) libdvm.so chromeview
+
+AGGREGATED OVER LAST 3 HOURS:
+Per-Package Stats:
+  * com.android.providers.userdictionary / u0a4:
+      * android.process.acore / u0a4:
+               TOTAL: 31% (8.5MB-9.4MB-9.6MB/6.9MB-7.7MB-7.9MB over 14)
+                 Top: 0.81%
+              Imp Fg: 3.4% (8.5MB-9.2MB-9.5MB/7.0MB-7.5MB-7.9MB over 3)
+              Imp Bg: 0.01%
+             Service: 26% (8.5MB-9.4MB-9.6MB/6.9MB-7.7MB-7.9MB over 11)
+            Receiver: 0.12%
+            (Cached): 19% (7.1MB-7.5MB-8.1MB/5.3MB-5.8MB-6.3MB over 10)
+  * com.android.providers.contacts / u0a4:
+      * android.process.acore / u0a4:
+               TOTAL: 31% (8.5MB-9.4MB-9.6MB/6.9MB-7.7MB-7.9MB over 14)
+                 Top: 0.81%
+              Imp Fg: 3.4% (8.5MB-9.2MB-9.5MB/7.0MB-7.5MB-7.9MB over 3)
+              Imp Bg: 0.01%
+             Service: 26% (8.5MB-9.4MB-9.6MB/6.9MB-7.7MB-7.9MB over 11)
+            Receiver: 0.12%
+            (Cached): 19% (7.1MB-7.5MB-8.1MB/5.3MB-5.8MB-6.3MB over 10)
+      * com.android.providers.contacts.VoicemailCleanupService:
+        Process: android.process.acore
+            Running count 14 / time 0.13%
+            Started count 7 / time 0.12%
+          Executing count 14 / time 0.01%
+
+Multi-Package Common Processes:
+  * android.process.acore / u0a4 (6 entries):
+        SOn /Norm/Top    : +59s320ms
+                  ImpFg  : +4m8s150ms
+                  ImpBg  : +530ms
+                  Service: +31m57s840ms
+                  Receivr: +9s90ms
+                  CchEmty: +22m36s110ms
+                  TOTAL  : +59m51s40ms
+        PSS/USS (3 entries):
+          SOn /Norm/ImpFg  : 3 samples 8.5MB 9.2MB 9.5MB / 7.0MB 7.5MB 7.9MB
+                    Service: 11 samples 8.5MB 9.4MB 9.6MB / 6.9MB 7.7MB 7.9MB
+                    CchEmty: 10 samples 7.1MB 7.5MB 8.1MB / 5.3MB 5.8MB 6.3MB
+
+Summary:
+  * android.process.acore / u0a4:
+           TOTAL: 31% (8.5MB-9.4MB-9.6MB/6.9MB-7.7MB-7.9MB over 14)
+             Top: 0.81%
+          Imp Fg: 3.4% (8.5MB-9.2MB-9.5MB/7.0MB-7.5MB-7.9MB over 3)
+          Imp Bg: 0.01%
+         Service: 26% (8.5MB-9.4MB-9.6MB/6.9MB-7.7MB-7.9MB over 11)
+        Receiver: 0.12%
+        (Cached): 19% (7.1MB-7.5MB-8.1MB/5.3MB-5.8MB-6.3MB over 10)
+
+Run time Stats:
+  SOn /Norm: +2h1m46s80ms
+      TOTAL: +2h1m46s80ms
+
+          Start time: 2015-07-13 12:52:17
+  Total elapsed time: +2h2m29s670ms (partial) libdvm.so chromeview
+
+CURRENT STATS:
+Per-Package Stats:
+  * com.android.providers.userdictionary / u0a4:
+      * android.process.acore / u0a4:
+               TOTAL: 13%
+                 Top: 8.1%
+              Imp Fg: 3.9%
+              Imp Bg: 0.06%
+             Service: 0.88%
+            Receiver: 0.27%
+            (Cached): 49%
+  * com.android.providers.contacts / u0a4:
+      * android.process.acore / u0a4:
+               TOTAL: 13%
+                 Top: 8.1%
+              Imp Fg: 3.9%
+              Imp Bg: 0.06%
+             Service: 0.88%
+            Receiver: 0.27%
+            (Cached): 49%
+
+Multi-Package Common Processes:
+  * android.process.acore / u0a4 (6 entries):
+        SOn /Norm/Top    : +11s480ms
+                  ImpFg  : +5s580ms
+                  ImpBg  : +90ms
+                  Service: +1s250ms
+                  Receivr: +390ms
+                  CchEmty: +1m9s540ms (running)
+                  TOTAL  : +1m28s330ms
+
+Summary:
+  * android.process.acore / u0a4:
+           TOTAL: 13%
+             Top: 8.1%
+          Imp Fg: 3.9%
+          Imp Bg: 0.06%
+         Service: 0.88%
+        Receiver: 0.27%
+        (Cached): 49%
+
+Run time Stats:
+  SOn /Norm: +2m22s150ms (running)
+      TOTAL: +2m22s150ms
+
+          Start time: 2015-07-23 00:51:35
+  Total elapsed time: +2m27s180ms (partial) libdvm.so chromeview
