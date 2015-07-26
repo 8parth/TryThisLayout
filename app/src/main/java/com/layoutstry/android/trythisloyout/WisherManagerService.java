@@ -26,7 +26,9 @@ import static com.layoutstry.android.trythisloyout.ContactsManagerContract.Conta
  */
 public class WisherManagerService extends IntentService {
 
-    //public WisherManagerService() {  }
+    public WisherManagerService() {
+        super("service");
+    }
 
     public WisherManagerService(String name) {
         super(name);
@@ -49,7 +51,7 @@ public class WisherManagerService extends IntentService {
                 "dd MMMM yyyy", Locale.getDefault()); // format it as per your requirement
         String toDay = formatter.format(currentDate.getTime());
 
-        if (homeFragment.isDBExist(ContactsManagerHelper.DATABASE_NAME)) {
+        if (getApplicationContext().getDatabasePath(ContactsManagerHelper.DATABASE_NAME).exists()){
             ContactsManagerHelper managerHelper = new ContactsManagerHelper(getApplicationContext());
             home_db = managerHelper.getReadableDatabase();
             String sort_order = ContactsManagerContract.ContactsEntry.COLUMN_NAME_NAME + " ASC";
@@ -77,10 +79,21 @@ public class WisherManagerService extends IntentService {
                 String annie = c.getString(c
                         .getColumnIndexOrThrow(ContactsManagerContract.ContactsEntry.COLUMN_NAME_ANNIE));
                 if (bday.equalsIgnoreCase(toDay)) {
-                    NotificationCompat.Builder notifyBday = new NotificationCompat.Builder(this)
-                            .setContentTitle("Wish " + name + " for birthday ;)")
-                            .setContentText("P.S. have an amazing day. ");
-                    //Intent resultIntent = new Intent(this, WishNotificationActivity.class);
+                    notifyUserAboutBirthday(name);
+                }
+            } while (c.moveToNext());
+            c.close();
+            home_db.close();
+        }
+    }
+
+    private void notifyUserAboutBirthday(String name) {
+
+        NotificationCompat.Builder notifyBday = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.ic_launcher)
+                .setContentTitle("Wish " + name + " for birthday ;)")
+                .setContentText("P.S. have an amazing day. ");
+        //Intent resultIntent = new Intent(this, WishNotificationActivity.class);
                     /*matrixCursor.addRow(new Object[]{
                             Long.toString(Id),
                             name,
@@ -88,13 +101,10 @@ public class WisherManagerService extends IntentService {
                             "Birthdate : " + bday + "\n" + "Annieversary: " + annie});
                     */
 
-                    NotificationManager nm =
-                            (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                    nm.notify(001, notifyBday.build() );
-                }
-            } while (c.moveToNext());
-            c.close();
-            home_db.close();
-        }
+        NotificationManager nm =
+                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        nm.notify(001, notifyBday.build() );
     }
+
+
 }

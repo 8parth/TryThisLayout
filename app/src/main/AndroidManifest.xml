@@ -3,18 +3,26 @@
     package="com.layoutstry.android.trythisloyout" >
 
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+
+        <receiver
+            android:name=".WisherManagerReceiver">
+            <intent-filter>
+                <action android:name="com.layoutsstry.android.trythisloyout.ACTION" />
+                <action android:name="com.layoutsstry.android.trythisloyout.ACTION2" />
+            </intent-filter>
+        </receiver>
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -23,10 +31,7 @@
             android:name=".WisherManagerService"
             android:exported="false" />
 
-        <activity
-            android:name=".WishNotificationActivity"
-            android:label="@string/title_activity_wish_notification" >
-        </activity>
+
     </application>
 
 </manifest>

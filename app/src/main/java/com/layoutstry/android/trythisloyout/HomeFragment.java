@@ -2,8 +2,11 @@ package com.layoutstry.android.trythisloyout;
 
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -27,6 +30,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Locale;
 
 import static com.layoutstry.android.trythisloyout.ContactsManagerContract.ContactsEntry.COLUMN_NAME_OTHER;
@@ -62,6 +66,8 @@ public class HomeFragment extends Fragment {
     MatrixCursor myMatrixCursorRefresh;
     ListView lstContacts;
     SwipeRefreshLayout mySwipeRefreshLayout;
+    private PendingIntent pendingIntent;
+    public static final String PACKAGENAME_ACTION = "com.layoutstry.android.trythisloyout.ACTION";
 
     public HomeFragment() { }
 
@@ -75,6 +81,19 @@ public class HomeFragment extends Fragment {
         activity = getActivity();
         context = activity.getApplicationContext();
         setHasOptionsMenu(true);
+
+        //service
+        //setting alarm inside a method
+        Intent wishIntent = new Intent(activity , WisherManagerReceiver.class);
+        wishIntent.setAction(PACKAGENAME_ACTION);
+        pendingIntent = PendingIntent.getBroadcast(context, 0, wishIntent, pendingIntent.FLAG_CANCEL_CURRENT);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.cancel(pendingIntent);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+
     }
 
     @Nullable
@@ -170,10 +189,7 @@ public class HomeFragment extends Fragment {
                 }
         );
 
-        //Service process
-        //Intent mSearviceIntent = new Intent(activity, WisherManagerService.class);
-//        mSearviceIntent.setData(Uri.parse(uri));
-        //activity.startService(mSearviceIntent);
+
     }
 
     @Override
