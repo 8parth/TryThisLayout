@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -148,6 +149,8 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        unbindDrawables(v.findViewById(R.id.settings_fragment));
+        System.gc();
     }
 
     private class ListViewContactsLoader extends AsyncTask<Void, Void, Cursor> {
@@ -361,4 +364,25 @@ public class SettingsFragment extends Fragment {
 
         }
     }
+
+
+    private void unbindDrawables(View view) {
+        if (view.getBackground() != null) {
+            view.getBackground().setCallback(null);
+        }
+        if (view instanceof ViewGroup ) {
+            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
+                unbindDrawables(((ViewGroup) view).getChildAt(i));
+            }
+            if(!(view instanceof AdapterView)) {
+                ((ViewGroup) view).removeAllViews();
+            }
+
+
+        } else if (view instanceof ImageView) {
+            ImageView imageView = (ImageView) view;
+            imageView.setImageBitmap(null);
+        }
+    }
+
 }

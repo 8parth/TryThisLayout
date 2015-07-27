@@ -6,6 +6,6 @@
         android:title="@string/action_refresh"
         android:icon="@drawable/ic_action_refresh"
         android:orderInCategory="9999"
-        app:showAsAction="ifRoom"
+        app:showAsAction="never"
         />
 </menu>

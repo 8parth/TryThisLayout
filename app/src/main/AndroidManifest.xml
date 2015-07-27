@@ -11,13 +11,21 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
 
-        <receiver
-            android:name=".WisherManagerReceiver">
+        <receiver android:name=".WisherManagerReceiver"
+            android:enabled="false"> <!--enable this programatically-->
             <intent-filter>
                 <action android:name="com.layoutsstry.android.trythisloyout.ACTION" />
                 <action android:name="com.layoutsstry.android.trythisloyout.ACTION2" />
             </intent-filter>
         </receiver>
+
+        <receiver android:name=".WisherAlarmSetterReceiver"
+            android:enabled="false"> <!--enable this programatically-->
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name" >

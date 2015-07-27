@@ -17,9 +17,8 @@ public class WisherManagerReceiver extends BroadcastReceiver {
         now.setToNow();
 
         String action = intent.getAction();
-        if(action.equals(HomeFragment.PACKAGENAME_ACTION)){
+        if(HomeFragment.PACKAGENAME_ACTION.equals(action)){
             Intent serviceIntent = new Intent(context, WisherManagerService.class);
-
             context.startService(serviceIntent);
         }
     }

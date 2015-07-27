@@ -4,9 +4,11 @@ package com.layoutstry.android.trythisloyout;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -25,6 +27,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -67,6 +70,7 @@ public class HomeFragment extends Fragment {
     ListView lstContacts;
     SwipeRefreshLayout mySwipeRefreshLayout;
     private PendingIntent pendingIntent;
+
     public static final String PACKAGENAME_ACTION = "com.layoutstry.android.trythisloyout.ACTION";
 
     public HomeFragment() { }
@@ -82,17 +86,6 @@ public class HomeFragment extends Fragment {
         context = activity.getApplicationContext();
         setHasOptionsMenu(true);
 
-        //service
-        //setting alarm inside a method
-        Intent wishIntent = new Intent(activity , WisherManagerReceiver.class);
-        wishIntent.setAction(PACKAGENAME_ACTION);
-        pendingIntent = PendingIntent.getBroadcast(context, 0, wishIntent, pendingIntent.FLAG_CANCEL_CURRENT);
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.cancel(pendingIntent);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
 
     }
 
@@ -189,6 +182,34 @@ public class HomeFragment extends Fragment {
                 }
         );
 
+        //service
+        //setting alarm inside a method
+        Intent wishIntent = new Intent(activity , WisherManagerReceiver.class);
+        wishIntent.setAction(PACKAGENAME_ACTION);
+        pendingIntent = PendingIntent.getBroadcast(context, 0, wishIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, 4);
+
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.cancel(pendingIntent);                         //this cancels previous alarms
+        //used setInexactRepeating() method
+        /*
+        When you use this method, Android synchronizes
+        multiple inexact repeating alarms and fires them at the same time.
+        This reduces the drain on the battery.
+        */
+
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,   //type of alarm
+                calendar.getTimeInMillis(),                         //setting time
+                AlarmManager.INTERVAL_DAY,                          //interval ex. when alarm has to be repeated
+                pendingIntent);                                     //intent to be fired
+
+
+        //Enabling the receiver programatically
+        //WisherManagerReceiver.class
+        //enableReceiver(context, "WisherManagerReceiver.class");
+        enableReceiver(context);
 
     }
 
@@ -214,6 +235,33 @@ public class HomeFragment extends Fragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+    public void enableReceiver(Context context){
+        ComponentName receiver = new ComponentName(context, WisherAlarmSetterReceiver.class);
+        ComponentName receiver2 = new ComponentName(context, WisherManagerReceiver.class);
+        PackageManager pm = context.getPackageManager();
+
+
+        pm.setComponentEnabledSetting(receiver2,
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                PackageManager.DONT_KILL_APP);
+
+        pm.setComponentEnabledSetting(receiver,
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                PackageManager.DONT_KILL_APP);
+
+        //TO DISABLE AN ALARM
+        //IN SITUATIONS LIKE WHEN USER DISABLES THE ALARM USE FOLLOWING METHOD
+        /*
+        ComponentName receiver = new ComponentName(context, SampleBootReceiver.class);
+        PackageManager pm = context.getPackageManager();
+
+        pm.setComponentEnabledSetting(receiver,
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                PackageManager.DONT_KILL_APP);
+        */
+
+
     }
     public boolean isDBExist(String name) {
 
@@ -574,6 +622,31 @@ public class HomeFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
 
+        unbindDrawables(rootView.findViewById(R.id.swiperefresh_home));
+        System.gc();
+    }
+    //this method is from stackoverflow
+    //http://stackoverflow.com/questions/1147172/what-android-tools-and-methods-work-best-to-find-memory-resource-leaks
+    //thanks to hp.android
+    /*
+    if (view instanceof ViewGroup && !(view instanceof AdapterView)) this will get rid of exception which you are getting for Adapter
+    */
+    private void unbindDrawables(View view) {
+        if (view.getBackground() != null) {
+            view.getBackground().setCallback(null);
+        }
+        if (view instanceof ViewGroup ) {
+            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
+                unbindDrawables(((ViewGroup) view).getChildAt(i));
+            }
+            if(!(view instanceof AdapterView)) {
+                ((ViewGroup) view).removeAllViews();
+            }
 
+
+        } else if (view instanceof ImageView) {
+            ImageView imageView = (ImageView) view;
+            imageView.setImageBitmap(null);
+        }
     }
 }

@@ -8,7 +8,7 @@
     <item
         android:id="@+id/action_example"
         android:title="@string/action_example"
-        app:showAsAction="withText|ifRoom" />
+        app:showAsAction="withText|never" />
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
