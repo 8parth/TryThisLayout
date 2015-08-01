@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_column="1"
     android:orientation="horizontal">
 
     <ImageView
@@ -10,9 +11,9 @@
         android:layout_width="0dp"
         android:layout_height="fill_parent"
         android:layout_margin="10dp"
-        android:layout_weight=".5"
+        android:layout_weight="0.5"
         android:src="@drawable/home_blue"/>
-
+    <!--android:layout_weight=".5"-->
     <TextView
         android:id="@+id/textView1"
         android:layout_width="0dp"
@@ -22,5 +23,5 @@
         android:layout_weight="1.5"
         android:gravity="left|center_vertical"
         android:text="TextView"/>
-
+    <!--android:layout_weight="1.5"-->
 </LinearLayout>

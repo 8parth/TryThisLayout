@@ -50,11 +50,11 @@ public class MainActivity extends ActionBarActivity
                     .commit();
         } else if (position == 1) {
             fragmentManager.beginTransaction()
-                    .replace(R.id.container, MailFragment.newInstance())
+                    .replace(R.id.container, SettingsFragment.newInstance())
                     .commit();
         } else if (position == 2) {
             fragmentManager.beginTransaction()
-                    .replace(R.id.container, SettingsFragment.newInstance())
+                    .replace(R.id.container, MailFragment.newInstance())
                     .commit();
         }
     }

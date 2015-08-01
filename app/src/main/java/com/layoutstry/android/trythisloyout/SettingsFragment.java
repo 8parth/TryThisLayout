@@ -136,7 +136,7 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        ((MainActivity) activity).onSectionAttached(3);
+        ((MainActivity) activity).onSectionAttached(2);
     }
 
     @Override
@@ -262,6 +262,27 @@ public class SettingsFragment extends Fragment {
                                 }
                             }
 
+                            //Getting photo
+/*
+                            try {
+                                InputStream thumbnailStream;
+                                BufferedInputStream buf;
+
+                                thumbnailStream = ContactsContract.Contacts.openContactPhotoInputStream(activity.getContentResolver(),
+                                        dataUri);
+                                buf = new BufferedInputStream(thumbnailStream);
+                                Bitmap my_btmp = BitmapFactory.decodeStream(buf);
+                                ImageView thumbImage = (ImageView) activity.findViewById(R.id.iv_photo);
+                                thumbImage.setImageBitmap(my_btmp);
+                                thumbnailStream.close();
+                                buf.close();
+                            } catch (IOException e) {
+
+                            } finally {
+
+
+                            }
+*/
                             //Getting Photo
                             /*
                             if (dataCursor.getString(dataCursor.getColumnIndex("mimetype"))
@@ -370,11 +391,11 @@ public class SettingsFragment extends Fragment {
         if (view.getBackground() != null) {
             view.getBackground().setCallback(null);
         }
-        if (view instanceof ViewGroup ) {
+        if (view instanceof ViewGroup) {
             for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
                 unbindDrawables(((ViewGroup) view).getChildAt(i));
             }
-            if(!(view instanceof AdapterView)) {
+            if (!(view instanceof AdapterView)) {
                 ((ViewGroup) view).removeAllViews();
             }
 

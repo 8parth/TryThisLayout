@@ -29,7 +29,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
@@ -63,7 +62,7 @@ public class HomeFragment extends Fragment {
     Context context;
     ContactsManagerHelper contactsManagerHelper;
     SQLiteDatabase db;
-    private ProgressBar home_spinner;
+    //private ProgressBar home_spinner;
     View rootView;
     boolean bool_adapter;
     MatrixCursor myMatrixCursorRefresh;
@@ -98,6 +97,7 @@ public class HomeFragment extends Fragment {
         // The contacts from the contacts content provider is stored in this cursor
         myMatrixCursor = new MatrixCursor(new String[]{
                 "_id",
+                "contact_id",
                 "name",
                 //"photo",
                 "details"});
@@ -160,7 +160,15 @@ public class HomeFragment extends Fragment {
         contactsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                                     @Override
                                                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                                        Toast.makeText(context, "Not yet done", Toast.LENGTH_SHORT).show();
+                                                        Cursor c = (Cursor) parent.getItemAtPosition(position);
+                                                        Long cid = c.getLong(1);
+                                                        //String name = c.getString(1);
+                                                        Intent i = new Intent(activity, ContactProfile.class);
+                                                        i.putExtra("contact_id", cid.toString());
+
+
+                                                        startActivity(i);
+
                                                     }
                                                 }
         );
@@ -282,6 +290,7 @@ public class HomeFragment extends Fragment {
 
         myMatrixCursorRefresh = new MatrixCursor(new String[]{
                 "_id",
+                "contact_id",
                 "name",
                 //"photo",
                 "details"});
@@ -586,12 +595,15 @@ public class HomeFragment extends Fragment {
                         .getColumnIndexOrThrow(ContactsManagerContract.ContactsEntry.COLUMN_NAME_BIRTHDAY));
                 String annie = cursor.getString(cursor
                         .getColumnIndexOrThrow(ContactsManagerContract.ContactsEntry.COLUMN_NAME_ANNIE));
-
+                String details = "Birthdate : " + bday + "\n" + "Annieversary: " + annie;
+                Long contact_id = cursor.getLong(cursor
+                        .getColumnIndexOrThrow(ContactsManagerContract.ContactsEntry.COLUMN_NAME_ENTRY_ID));
                 myMatrixCursor.addRow(new Object[]{
                         Long.toString(Id),
+                        contact_id,
                         name,
                         //photoPath,
-                        "Birthdate : " + bday + "\n" + "Annieversary: " + annie});
+                        details});
             } while (cursor.moveToNext());
             cursor.close();
             db.close();
@@ -618,10 +630,16 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    /*@Override
+    public void onStop() {
+        super.onStop();
+
+    }*/
+
     @Override
     public void onDestroy() {
         super.onDestroy();
-
+        //activity.setContentView(null);
         unbindDrawables(rootView.findViewById(R.id.swiperefresh_home));
         System.gc();
     }

@@ -34,13 +34,24 @@ public class MailFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        ((MainActivity) activity).onSectionAttached(2);
+        ((MainActivity) activity).onSectionAttached(3);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        View root = v.findViewById(R.id.mail_fragment);
+        //Context context = getActivity().getApplicationContext();
+        //getActivity().setContentView(new View(context));
+        unbindDrawables(root);
+        System.gc();
+
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        unbindDrawables(v.findViewById(R.id.swiperefresh_home));
+        unbindDrawables(v.findViewById(R.id.mail_fragment));
         System.gc();
     }
 

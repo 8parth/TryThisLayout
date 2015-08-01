@@ -2,11 +2,13 @@ package com.layoutstry.android.trythisloyout;
 
 import android.app.IntentService;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -25,7 +27,7 @@ import static com.layoutstry.android.trythisloyout.ContactsManagerContract.Conta
  * Provide this entry as a <service> element that's a child of the <application> element
  */
 public class WisherManagerService extends IntentService {
-
+    private static boolean isAlreadyNotified;
     public WisherManagerService() {
         super("service");
     }
@@ -89,10 +91,21 @@ public class WisherManagerService extends IntentService {
 
     private void notifyUserAboutBirthday(String name) {
 
+        Intent resultIntent = new Intent(this, ContactProfile.class);
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        //Adds the back stack
+        stackBuilder.addParentStack(ContactProfile.class);
+        //Adds the intent to the top of the stack
+        stackBuilder.addNextIntent(resultIntent);
+        //Gets a PendingIntent containing entire back stack
+        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
         NotificationCompat.Builder notifyBday = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setContentTitle("Wish " + name + " for birthday ;)")
                 .setContentText("P.S. have an amazing day. ");
+
+        notifyBday.setContentIntent(resultPendingIntent);
         //Intent resultIntent = new Intent(this, WishNotificationActivity.class);
                     /*matrixCursor.addRow(new Object[]{
                             Long.toString(Id),
@@ -101,9 +114,13 @@ public class WisherManagerService extends IntentService {
                             "Birthdate : " + bday + "\n" + "Annieversary: " + annie});
                     */
 
+
+
+
         NotificationManager nm =
                 (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         nm.notify(001, notifyBday.build() );
+        //isAlreadyNotified = true;
     }
 
 
