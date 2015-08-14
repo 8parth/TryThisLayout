@@ -107,11 +107,11 @@ public class NavigationDrawerFragment extends Fragment {
                     images[0] = R.drawable.home_blue;
                     images[1] = R.drawable.mail_yellow;
                     images[2] = R.drawable.settings_yellow;
-                } else if(position == 1) {
+                } /*else if(position == 1) {
                     images[0] = R.drawable.home_blue;
                     images[1] = R.drawable.mail_yellow;
                     images[2] = R.drawable.settings_yellow;
-                } else if(position == 2) {
+                } */else if(position == 1) {
                     images[0] = R.drawable.home_blue;
                     images[1] = R.drawable.mail_yellow;
                     images[2] = R.drawable.settings_yellow;
@@ -124,8 +124,8 @@ public class NavigationDrawerFragment extends Fragment {
         });
 
         titles = new String[] {
-                getString(R.string.title_section1),
-                getString(R.string.title_section2),
+                getString(R.string.title_section1),/*
+                getString(R.string.title_section2),*/
                 getString(R.string.title_section3),
         };
 

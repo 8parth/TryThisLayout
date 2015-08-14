@@ -5,10 +5,9 @@
     android:id="@+id/swiperefresh_home"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#a7c6e2"
     android:gravity="top"
     tools:context="com.android.navigationdrawer.MainActivity$HomeFragment">
-
+    <!--android:background="#a7c6e2"-->
  <!--   <ProgressBar
         android:id="@+id/home_progressbar"
 

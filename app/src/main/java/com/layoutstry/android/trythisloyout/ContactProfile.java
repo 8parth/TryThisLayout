@@ -16,6 +16,9 @@ import android.provider.ContactsContract;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,30 +33,43 @@ public class ContactProfile extends ActionBarActivity {
     String homePhone;
     String mobilePhone;
     String workPhone;
+    String number;
+
     Context context;
     ContentResolver cr;
+    ImageView contact_call;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
+
         context = getApplicationContext();
         cr = context.getContentResolver();
+
         setContentView(R.layout.activity_contact_profile);
+
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
-        Intent i = getIntent();
-        String id = i.getStringExtra("contact_id");
-        Long x = Long.parseLong(id);
-        Toast.makeText(getApplicationContext(), "contact id " + id, Toast.LENGTH_SHORT).show();
-        getSpecificContact(x);
-//        getSpecificContactPhoto(x);
 
+        Intent i = getIntent();
+
+        //String id = i.getStringExtra("contact_id");
+        String id;
+            Bundle b = getIntent().getExtras();
+            id = b.getString("contact_id");
+        Toast.makeText(context, "contact id " + id, Toast.LENGTH_SHORT).show();
+        Long x = Long.parseLong(id);
+        //Toast.makeText(getApplicationContext(), "contact id " + id, Toast.LENGTH_SHORT).show();
+        getSpecificContact(x);
+        //getSpecificContactPhoto(x);
 
 
         InputStream photoStream;
         BufferedInputStream buf;
         photoStream = openDisplayPhoto(x);
-        if(photoStream != null) {
+        if (photoStream != null) {
             buf = new BufferedInputStream(photoStream);
             Bitmap my_btmp = BitmapFactory.decodeStream(buf);
             ImageView profileImage = (ImageView) findViewById(R.id.profile_image);
@@ -66,10 +82,31 @@ public class ContactProfile extends ActionBarActivity {
                 e.printStackTrace();
             }
         }
+
+        //handle calling functionality
+        contact_call = (ImageView) findViewById(R.id.profile_call);
+        contact_call.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                manageCall();
+            }
+        });
+    }
+
+    public void manageCall() {
+        Intent callIntent = new Intent(Intent.ACTION_CALL);
+        if (number != null && !number.equals("")) {
+            callIntent.setData(Uri.parse("tel:" + number));
+        }
+        try {
+            startActivity(callIntent);
+        } catch (Exception e) {
+            System.out.println("call activity not found");
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-    public void getSpecificContactPhoto(Long id){
+    public void getSpecificContactPhoto(Long id) {
 
         InputStream thumbnailStream;
         BufferedInputStream buf;
@@ -77,29 +114,36 @@ public class ContactProfile extends ActionBarActivity {
         Uri contactPhotoUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, id);
         thumbnailStream = ContactsContract.Contacts.openContactPhotoInputStream(cr,
                 contactPhotoUri, true);
-        if(thumbnailStream != null) {
+        if (thumbnailStream != null) {
             buf = new BufferedInputStream(thumbnailStream);
             Bitmap my_btmp = BitmapFactory.decodeStream(buf);
             ImageView thumbImage = (ImageView) findViewById(R.id.profile_image);
             thumbImage.setImageBitmap(my_btmp);
-            try{
+            try {
                 buf.close();
                 thumbnailStream.close();
-            }catch (Exception e){
+            } catch (Exception e) {
 
             }
         }
     }
+
+
     public void getSpecificContact(Long id) {
+        homePhone = "";
+        mobilePhone = "";
+        workPhone = "";
+        number = "";
+
         Uri contactDataUri = ContactsContract.Data.CONTENT_URI;
-        final String[] projection = {
+        /*final String[] projection = {
                 ContactsContract.Contacts._ID,
                 Build.VERSION.SDK_INT
                         >= Build.VERSION_CODES.HONEYCOMB ?
                         ContactsContract.Contacts.DISPLAY_NAME_PRIMARY :
                         ContactsContract.Contacts.DISPLAY_NAME,
                 ContactsContract.Contacts.LOOKUP_KEY
-        };
+        };*/
 
         final String selection = ContactsContract.Data.CONTACT_ID + " = " + id;
 
@@ -116,12 +160,16 @@ public class ContactProfile extends ActionBarActivity {
 
             contactName = contactCursor.getString(contactCursor
                     .getColumnIndex(ContactsContract.Data.DISPLAY_NAME));
+
             //Getting phone numbers
-                /*if (contactCursor.getString(contactCursor.getColumnIndex("mimetype"))
+            do {
+                if (contactCursor.getString(contactCursor.getColumnIndex("mimetype"))
                         .equals(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)) {
+                    Toast.makeText(context, "contact id " + id + "has phones", Toast.LENGTH_SHORT).show();
                     switch (contactCursor.getInt(contactCursor.getColumnIndex("data2"))) {
                         case ContactsContract.CommonDataKinds.Phone.TYPE_HOME:
                             homePhone = contactCursor.getString(contactCursor.getColumnIndex("data1"));
+                            Toast.makeText(context, "contact id " + id + "has homePhone", Toast.LENGTH_SHORT).show();
                             break;
                         case ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE:
                             mobilePhone = contactCursor.getString(contactCursor.getColumnIndex("data1"));
@@ -130,13 +178,34 @@ public class ContactProfile extends ActionBarActivity {
                             workPhone = contactCursor.getString(contactCursor.getColumnIndex("data1"));
                             break;
                     }
-
-                }*/
-
+                }
+            }while (contactCursor.moveToNext());
         }
         contactCursor.close();
-        TextView x = (TextView) findViewById(R.id.profile_name);
-        x.setText(contactName);
+        TextView cname = (TextView) findViewById(R.id.profile_name);
+        cname.setText(contactName);
+
+        TextView cnum = (TextView) findViewById(R.id.profile_number);
+        if (!homePhone.equals("") && homePhone != null) {
+            cnum.setText(homePhone);
+            number = homePhone;
+        } else if (mobilePhone != null && !mobilePhone.equals("")) {
+            cnum.setText(mobilePhone);
+            number = mobilePhone;
+        } else if (workPhone != null && !workPhone.equals("")) {
+            cnum.setText(workPhone);
+            number = workPhone;
+        } else {
+            cnum.setText("No number found!");
+            contact_call = (ImageView) findViewById(R.id.profile_call);
+            contact_call.setVisibility(View.INVISIBLE);
+            contact_call.setClickable(false);
+        }
+
+    }
+
+    private void getNumbers(Long id){
+
     }
 /*
 
@@ -175,12 +244,16 @@ public class ContactProfile extends ActionBarActivity {
 
 
         //using PHOTO_FILE_ID with CONTENT_URI to create uri of the photo
-        Uri person =  ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactId);
-        //for thumbnail, api level 5
-        Uri displayPhotoUri = Uri.withAppendedPath(person, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
-        //for full size image, api level 14
-        //Uri displayPhotoUri = Uri.withAppendedPath(person, ContactsContract.Contacts.Photo.DISPLAY_PHOTO);
-
+        Uri person = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactId);
+        Uri displayPhotoUri;
+        if (Build.VERSION.SDK_INT >= 14) {
+            //for full size image, api level 14
+            displayPhotoUri = Uri.withAppendedPath(person, ContactsContract.Contacts.Photo.DISPLAY_PHOTO);
+        } else {
+            //for thumbnail, api level 5
+            //displayPhotoUri = Uri.withAppendedPath(person, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
+            displayPhotoUri = Uri.withAppendedPath(person, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
+        }
         //
         try {
             AssetFileDescriptor fd =
@@ -194,7 +267,26 @@ public class ContactProfile extends ActionBarActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //unbindDrawables(rootView.findViewById(R.id.swiperefresh_home));
+        unbindDrawables(findViewById(R.id.contact_profile_layout));
         System.gc();
+    }
+
+    private void unbindDrawables(View view) {
+        if (view.getBackground() != null) {
+            view.getBackground().setCallback(null);
+        }
+        if (view instanceof ViewGroup) {
+            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
+                unbindDrawables(((ViewGroup) view).getChildAt(i));
+            }
+            if (!(view instanceof AdapterView)) {
+                ((ViewGroup) view).removeAllViews();
+            }
+
+
+        } else if (view instanceof ImageView) {
+            ImageView imageView = (ImageView) view;
+            imageView.setImageBitmap(null);
+        }
     }
 }

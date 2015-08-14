@@ -48,11 +48,11 @@ public class MainActivity extends ActionBarActivity
             fragmentManager.beginTransaction()
                     .replace(R.id.container, HomeFragment.newInstance())
                     .commit();
-        } else if (position == 1) {
+        }/* else if (position == 1) {
             fragmentManager.beginTransaction()
                     .replace(R.id.container, SettingsFragment.newInstance())
                     .commit();
-        } else if (position == 2) {
+        }*/ else if (position == 1) {
             fragmentManager.beginTransaction()
                     .replace(R.id.container, MailFragment.newInstance())
                     .commit();
@@ -66,10 +66,10 @@ public class MainActivity extends ActionBarActivity
             case 1:
                 mTitle = getString(R.string.title_section1);
                 break;
-            case 2:
+            /*case 2:
                 mTitle = getString(R.string.title_section2);
-                break;
-            case 3:
+                break;*/
+            case 2:
                 mTitle = getString(R.string.title_section3);
                 break;
         }

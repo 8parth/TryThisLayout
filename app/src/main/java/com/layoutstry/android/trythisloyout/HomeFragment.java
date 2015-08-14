@@ -161,10 +161,21 @@ public class HomeFragment extends Fragment {
                                                     @Override
                                                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                                         Cursor c = (Cursor) parent.getItemAtPosition(position);
+                                                        Bundle b =  new Bundle();
                                                         Long cid = c.getLong(1);
+                                                        b.putString("contact_id", cid.toString());
+                                                        //try {
+
+                                                        //} catch (Exception e){
+                                                        //    System.out.println("Column not found");
+                                                        //}
+
                                                         //String name = c.getString(1);
                                                         Intent i = new Intent(activity, ContactProfile.class);
-                                                        i.putExtra("contact_id", cid.toString());
+                                                        i.putExtras(b);
+                                                        //i.putExtra("contact_id", cid.toString());
+
+
 
 
                                                         startActivity(i);
@@ -282,8 +293,7 @@ public class HomeFragment extends Fragment {
         contactsManagerHelper.close();
         db.close();
 
-        //deleting database
-
+        //deleting databas
         context.deleteDatabase("ContactsManager.db");
 
         ////
@@ -505,9 +515,12 @@ public class HomeFragment extends Fragment {
                                     COLUMN_NAME_OTHER,
                                     values
                             );
+
+
                             if(!bool_adapter){
                                 myMatrixCursorRefresh.addRow(new Object[]{
                                         Long.toString(contactId),
+                                        contactId,
                                         displayName,
                                         details
                                 });
@@ -522,19 +535,18 @@ public class HomeFragment extends Fragment {
                                         details});
                             }
                         }
-
                     }
                 } while (contactsCursor.moveToNext());
-
-
                 contactsCursor.close();
 
                 db.close();
             }
 
             if(!bool_adapter){
+                //myAdapterRefresh.notifyDataSetChanged(); //caused error
                 return myMatrixCursorRefresh;
             }else {
+                //myAdapter.notifyDataSetChanged(); //caused error
                 return myMatrixCursor;
             }
         }
@@ -542,7 +554,7 @@ public class HomeFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-          //home_spinner.setVisibility(VISIBLE);
+            //home_spinner.setVisibility(VISIBLE);
         }
 
         @Override
@@ -555,8 +567,6 @@ public class HomeFragment extends Fragment {
 
                 myMatrixCursorRefresh.close();
                 myAdapterRefresh.swapCursor(result);
-
-
 
             }else {
 
@@ -585,7 +595,7 @@ public class HomeFragment extends Fragment {
             );
 
             cursor.moveToFirst();
-            do {
+            while (cursor.moveToNext()) {
                 long Id = cursor.getLong(
                         cursor.getColumnIndexOrThrow(ContactsManagerContract.ContactsEntry._ID)
                 );
@@ -604,7 +614,7 @@ public class HomeFragment extends Fragment {
                         name,
                         //photoPath,
                         details});
-            } while (cursor.moveToNext());
+            }
             cursor.close();
             db.close();
 

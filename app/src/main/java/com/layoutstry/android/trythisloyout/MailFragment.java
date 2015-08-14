@@ -63,9 +63,6 @@ public class MailFragment extends Fragment {
             for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
                 unbindDrawables(((ViewGroup) view).getChildAt(i));
             }
-
-
-
         }
     }
 }

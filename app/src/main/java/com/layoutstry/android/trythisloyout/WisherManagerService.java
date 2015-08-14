@@ -7,6 +7,9 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
+import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 
@@ -28,6 +31,7 @@ import static com.layoutstry.android.trythisloyout.ContactsManagerContract.Conta
  */
 public class WisherManagerService extends IntentService {
     private static boolean isAlreadyNotified;
+
     public WisherManagerService() {
         super("service");
     }
@@ -53,7 +57,7 @@ public class WisherManagerService extends IntentService {
                 "dd MMMM yyyy", Locale.getDefault()); // format it as per your requirement
         String toDay = formatter.format(currentDate.getTime());
 
-        if (getApplicationContext().getDatabasePath(ContactsManagerHelper.DATABASE_NAME).exists()){
+        if (getApplicationContext().getDatabasePath(ContactsManagerHelper.DATABASE_NAME).exists()) {
             ContactsManagerHelper managerHelper = new ContactsManagerHelper(getApplicationContext());
             home_db = managerHelper.getReadableDatabase();
             String sort_order = ContactsManagerContract.ContactsEntry.COLUMN_NAME_NAME + " ASC";
@@ -80,8 +84,10 @@ public class WisherManagerService extends IntentService {
                         .getColumnIndexOrThrow(ContactsManagerContract.ContactsEntry.COLUMN_NAME_BIRTHDAY));
                 String annie = c.getString(c
                         .getColumnIndexOrThrow(ContactsManagerContract.ContactsEntry.COLUMN_NAME_ANNIE));
+                String number = c.getString(c
+                        .getColumnIndexOrThrow(ContactsManagerContract.ContactsEntry.COLUMN_NAME_NUMBER));
                 if (bday.equalsIgnoreCase(toDay)) {
-                    notifyUserAboutBirthday(name);
+                    notifyUserAboutBirthday(name, number);
                 }
             } while (c.moveToNext());
             c.close();
@@ -89,9 +95,32 @@ public class WisherManagerService extends IntentService {
         }
     }
 
-    private void notifyUserAboutBirthday(String name) {
+    private Long getContactId(String name,String number){
+        Long id;
+        Uri contactsUri = ContactsContract.Contacts.CONTENT_URI;
+        String[] selectionArgs = {
 
+        };
+        String selection = ContactsContract.Contacts.DISPLAY_NAME +" = " +name;
+        Cursor contactsCursor = getContentResolver().query(
+                contactsUri,
+                null,
+                selection,
+                null,
+                null
+        );
+        id = contactsCursor.getLong(contactsCursor.getColumnIndex("_ID"));
+        contactsCursor.close();
+    return id;
+    }
+    private void notifyUserAboutBirthday(String name, String number) {
+
+
+        Bundle b = new Bundle();
+        Long id = getContactId(name, number);
+        b.putString("contact_id", id.toString());
         Intent resultIntent = new Intent(this, ContactProfile.class);
+        resultIntent.putExtras(b);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         //Adds the back stack
         stackBuilder.addParentStack(ContactProfile.class);
@@ -100,13 +129,16 @@ public class WisherManagerService extends IntentService {
         //Gets a PendingIntent containing entire back stack
         PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
+
         NotificationCompat.Builder notifyBday = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.ic_launcher)
+                .setSmallIcon(R.drawable.birthday_cake)
                 .setContentTitle("Wish " + name + " for birthday ;)")
-                .setContentText("P.S. have an amazing day. ");
+                .setContentText("P.S. have an amazing day. ")
+                .setAutoCancel(true);
+                //.setExtras(b);
 
         notifyBday.setContentIntent(resultPendingIntent);
-        //Intent resultIntent = new Intent(this, WishNotificationActivity.class);
+
                     /*matrixCursor.addRow(new Object[]{
                             Long.toString(Id),
                             name,
@@ -115,11 +147,9 @@ public class WisherManagerService extends IntentService {
                     */
 
 
-
-
         NotificationManager nm =
                 (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        nm.notify(001, notifyBday.build() );
+        nm.notify(001, notifyBday.build());
         //isAlreadyNotified = true;
     }
 

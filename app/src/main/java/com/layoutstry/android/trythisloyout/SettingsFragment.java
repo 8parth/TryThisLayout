@@ -10,7 +10,8 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SimpleCursorAdapter;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,8 +31,9 @@ import static android.view.View.VISIBLE;
 public class SettingsFragment extends Fragment {
     public View v;
     public Boolean isBirthday = false;
-    SimpleCursorAdapter mAdapter;
+    //SimpleCursorAdapter mAdapter;
     MatrixCursor mMatrixCursor;
+
     String displayName;
     String homePhone;
     String mobilePhone;
@@ -45,6 +47,12 @@ public class SettingsFragment extends Fragment {
     Context context;
     //File tmpFile;
     private ProgressBar spinner;
+
+
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+    MatrixCursor myDataset;
 
     public SettingsFragment() {
 
@@ -68,9 +76,24 @@ public class SettingsFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_settings, container, false);
         v = rootView;
 
+        mRecyclerView = (RecyclerView) activity.findViewById(R.id.lst_contacts);
+
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        mRecyclerView.setHasFixedSize(true);
+
+        // use a linear layout manager
+        mLayoutManager = new LinearLayoutManager(activity);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        // specify an adapter (see also next example)
+        mAdapter = new RecyclerContactsAdapter(myDataset);
+        mRecyclerView.setAdapter(mAdapter);
+
+
         // The contacts from the contacts content provider is stored in this cursor
         mMatrixCursor = new MatrixCursor(new String[]{"_id", "name", "photo", "details"});
-
+/*
         // Adapter to set the data in listview
         mAdapter = new SimpleCursorAdapter(
                 activity,
@@ -80,13 +103,13 @@ public class SettingsFragment extends Fragment {
                 new int[]{R.id.tv_name, R.id.iv_photo, R.id.tv_details},
                 0);
 
-
+*/
         // Getting reference to the listview
-        ListView lstContacts = (ListView) rootView.findViewById(R.id.lst_contacts);
-
+        //ListView lstContacts = (ListView) rootView.findViewById(R.id.lst_contacts);
+/*
         // Setting adapter to the listview
         lstContacts.setAdapter(mAdapter);
-
+*/
         // Creating an AsyncTask object to retrieve and load listview with contacts
         ListViewContactsLoader listViewContactsLoader = new ListViewContactsLoader();
 
@@ -358,7 +381,9 @@ public class SettingsFragment extends Fragment {
                         // Adding id, display name, path to photo and other details to cursor
                         if (isBirthday) {
 
-                            mMatrixCursor.addRow(new Object[]{Long.toString(contactId), displayName, photoPath, details});
+                            //mMatrixCursor.addRow(new Object[]{Long.toString(contactId), displayName, photoPath, details});
+                            myDataset.addRow(new Object[]{Long.toString(contactId), displayName, photoPath, details});
+
                         }
 
                     }
@@ -381,7 +406,7 @@ public class SettingsFragment extends Fragment {
         protected void onPostExecute(Cursor result) {
             // Setting the cursor containing contacts to listview
             spinner.setVisibility(GONE);
-            mAdapter.swapCursor(result);
+            //mAdapter.swapCursor(result);
 
         }
     }
