@@ -1,20 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/mail_fragment"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#B70CE8"
-    android:gravity="center"
-    tools:context="com.android.navigationdrawer.MainActivity$HomeFragment" >
+    android:id="@+id/mail_fragment_scrollview"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    tools:context="com.android.navigationdrawer.MainActivity$HomeFragment">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/mail_fragment"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="working on it!"
-        android:textColor="#ffffff"
-        android:textSize="20sp"
-        android:textStyle="bold|italic"/>
+        android:gravity="top">
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/app_tagline_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5sp"
+            android:layout_marginBottom="5sp"
+            android:layout_marginTop="5sp"
+            android:text="@string/app_tagline"
+            android:textColor="@color/bright_foreground_material_light"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/about_app_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/app_tagline_id"
+            android:layout_margin="5sp"
+            android:layout_marginBottom="10sp"
+            android:layout_marginTop="20sp"
+            android:linksClickable="true"
+            android:text="@string/about_app"
+            android:textColor="@color/bright_foreground_material_light"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/licence_icons8_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/about_app_id"
+            android:layout_margin="5sp"
+            android:layout_marginBottom="10sp"
+            android:layout_marginTop="10sp"
+            android:linksClickable="true"
+            android:text="@string/licence_icons8"
+            android:textColor="@color/bright_foreground_material_light"
+            android:textSize="20sp" />
+    </RelativeLayout>
+</ScrollView>

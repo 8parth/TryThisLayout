@@ -29,8 +29,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Toast;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -45,7 +45,7 @@ public class HomeFragment extends Fragment {
      */
     public View v;
     public Boolean isBirthday = false;
-    SimpleCursorAdapter myAdapter,myAdapterRefresh;
+    SimpleCursorAdapter myAdapter, myAdapterRefresh;
     MatrixCursor myMatrixCursor;
     String displayName;
     String homePhone;
@@ -72,7 +72,8 @@ public class HomeFragment extends Fragment {
 
     public static final String PACKAGENAME_ACTION = "com.layoutstry.android.trythisloyout.ACTION";
 
-    public HomeFragment() { }
+    public HomeFragment() {
+    }
 
     public static HomeFragment newInstance() {
         return new HomeFragment();
@@ -131,22 +132,16 @@ public class HomeFragment extends Fragment {
         if (!isDBExist(ContactsManagerHelper.DATABASE_NAME)) {
 
 
-
             // Creating an AsyncTask object to retrieve and load listview with contacts
             ListViewContactsLoader listViewContactsLoader = new ListViewContactsLoader();
             //home_spinner = (ProgressBar) rootView.findViewById(R.id.home_progressbar);
             // Starting the AsyncTask process to retrieve and load listview with contacts
             listViewContactsLoader.execute();
-
-            Toast.makeText(context, ContactsManagerHelper.DATABASE_NAME + " does not exist!", Toast.LENGTH_SHORT).show();
         } else {
 
             DBContactsLoader contactsLoader = new DBContactsLoader();
             //home_spinner = (ProgressBar) rootView.findViewById(R.id.home_progressbar);
             contactsLoader.execute();
-
-            Toast.makeText(context, ContactsManagerHelper.DATABASE_NAME + " already exists!", Toast.LENGTH_SHORT).show();
-
         }
 
         return rootView;
@@ -161,7 +156,7 @@ public class HomeFragment extends Fragment {
                                                     @Override
                                                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                                         Cursor c = (Cursor) parent.getItemAtPosition(position);
-                                                        Bundle b =  new Bundle();
+                                                        Bundle b = new Bundle();
                                                         Long cid = c.getLong(1);
                                                         b.putString("contact_id", cid.toString());
                                                         //try {
@@ -176,8 +171,6 @@ public class HomeFragment extends Fragment {
                                                         //i.putExtra("contact_id", cid.toString());
 
 
-
-
                                                         startActivity(i);
 
                                                     }
@@ -185,7 +178,7 @@ public class HomeFragment extends Fragment {
         );
 
         //Swipe to refresh feature on listview
-        mySwipeRefreshLayout  = (SwipeRefreshLayout) activity.findViewById(R.id.swiperefresh_home);
+        mySwipeRefreshLayout = (SwipeRefreshLayout) activity.findViewById(R.id.swiperefresh_home);
         //mySwipeRefreshLayout = new SwipeRefreshLayout(context);
         mySwipeRefreshLayout.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
@@ -193,9 +186,9 @@ public class HomeFragment extends Fragment {
                     public void onRefresh() {
                         // This method performs the actual data-refresh operation.
                         // The method calls setRefreshing(false) when it's finished.
-                        if(updateDB()){
-                            Toast.makeText(context, "DB updated in swipe", Toast.LENGTH_SHORT).show();
-
+                        if (updateDB()) {
+                            //Toast.makeText(context, "DB updated in swipe", Toast.LENGTH_SHORT).show();
+                            System.out.println("DB updated in swipe");
                         }
                     }
                 }
@@ -203,7 +196,7 @@ public class HomeFragment extends Fragment {
 
         //service
         //setting alarm inside a method
-        Intent wishIntent = new Intent(activity , WisherManagerReceiver.class);
+        Intent wishIntent = new Intent(activity, WisherManagerReceiver.class);
         wishIntent.setAction(PACKAGENAME_ACTION);
         pendingIntent = PendingIntent.getBroadcast(context, 0, wishIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         Calendar calendar = Calendar.getInstance();
@@ -255,7 +248,8 @@ public class HomeFragment extends Fragment {
                 return super.onOptionsItemSelected(item);
         }
     }
-    public void enableReceiver(Context context){
+
+    public void enableReceiver(Context context) {
         ComponentName receiver = new ComponentName(context, WisherAlarmSetterReceiver.class);
         ComponentName receiver2 = new ComponentName(context, WisherManagerReceiver.class);
         PackageManager pm = context.getPackageManager();
@@ -282,18 +276,19 @@ public class HomeFragment extends Fragment {
 
 
     }
+
     public boolean isDBExist(String name) {
 
         return context.getDatabasePath(name).exists();
     }
 
-    private boolean updateDB(){
+    private boolean updateDB() {
         db = contactsManagerHelper.getWritableDatabase();
         //closing all connections to the database
         contactsManagerHelper.close();
         db.close();
 
-        //deleting databas
+        //deleting database
         context.deleteDatabase("ContactsManager.db");
 
         ////
@@ -332,7 +327,14 @@ public class HomeFragment extends Fragment {
         return true;
     }
 
+
     private class ListViewContactsLoader extends AsyncTask<Void, Void, Cursor> {
+        final String[] inputFormats = {
+                "yyyy-MM-dd",
+                "-MM-dd",
+                "yyyyMMdd"
+        };
+
         protected Cursor doInBackground(Void... Params) {
             Uri contactsUri = ContactsContract.Contacts.CONTENT_URI;
             contactsManagerHelper = new ContactsManagerHelper(context);
@@ -345,7 +347,7 @@ public class HomeFragment extends Fragment {
                     null,
                     ContactsContract.Contacts.HAS_PHONE_NUMBER + "=1",
                     null,
-                    ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY + " COLLATE LOCALIZED ASC");
+                    "UPPER(" +ContactsContract.Contacts.DISPLAY_NAME + ") COLLATE LOCALIZED ASC");
 
             if (contactsCursor.moveToFirst()) {
                 do {
@@ -365,9 +367,14 @@ public class HomeFragment extends Fragment {
 
                     // Querying the table ContactsContract.Data to retrieve individual items like
                     // home phone, mobile phone, work email etc corresponding to each contact
-
+                    //ContactsContract.Data.CONTENT_TYPE
                     String selection =
-                            ContactsContract.Data.CONTACT_ID + "=" + contactId;
+                            ContactsContract.Data.CONTACT_ID + "=" + contactId
+                                    +" AND "
+                                    +ContactsContract.Data.MIMETYPE + "= '"
+                                    + ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE + "' AND "
+                                    + ContactsContract.CommonDataKinds.Event.TYPE + "=" + ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY;
+                                    //+" AND " +ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE +"=" +ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY;
 
                     Cursor dataCursor = activity.getContentResolver().query(
                             dataUri,
@@ -376,7 +383,7 @@ public class HomeFragment extends Fragment {
                             null,
                             null);
 
-
+                    System.out.println(ContactsContract.CommonDataKinds.Event.START_DATE);
                     displayName = "";
                     homePhone = "";
                     mobilePhone = "";
@@ -391,6 +398,7 @@ public class HomeFragment extends Fragment {
 
 
                     if (dataCursor.moveToFirst()) {
+                        dataCursor.moveToFirst();
                         // Getting Display name
                         displayName = dataCursor.getString(dataCursor
                                 .getColumnIndex(ContactsContract.Data.DISPLAY_NAME));
@@ -401,40 +409,37 @@ public class HomeFragment extends Fragment {
                             if (dataCursor.getString(dataCursor.getColumnIndex("mimetype"))
                                     .equals(ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE)) {
                                 isBirthday = true;
-                                SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault());
+
+
 
                                 switch (dataCursor.getInt(dataCursor.getColumnIndex("data2"))) {
                                     case ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY:
                                         birthdate = dataCursor.getString(dataCursor.getColumnIndex("data1"));
 
+                                        birthdate = formatThisDate(birthdate);
+
+                                        /*
                                         try {
                                             birthdate = dateFormat
-                                                    .format(new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(birthdate));
+                                                    .format(new SimpleDateFormat("yyyy-MM-dd", locale).parse(birthdate));
                                         } catch (Exception e) {
                                             try {
                                                 birthdate = dateFormat
-                                                        .format(new SimpleDateFormat("-MM-dd", Locale.getDefault()).parse(birthdate));
+                                                        .format(new SimpleDateFormat("-MM-dd", locale).parse(birthdate));
                                             } catch (Exception e2) {
                                                 e.printStackTrace();
                                             }
-                                        }
+                                        }*/
+
                                         break;
                                     case ContactsContract.CommonDataKinds.Event.TYPE_ANNIVERSARY:
                                         anniversary = dataCursor.getString(dataCursor.getColumnIndex("data1"));
-                                        try {
-                                            anniversary = dateFormat
-                                                    .format(new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(anniversary));
-                                        } catch (Exception e) {
-                                            try {
-                                                anniversary = dateFormat
-                                                        .format(new SimpleDateFormat("-MM-dd", Locale.getDefault()).parse(anniversary));
-                                            } catch (Exception e2) {
-                                                e.printStackTrace();
-                                            }
-                                        }
+                                        anniversary = formatThisDate(anniversary);
+
                                         break;
                                     case ContactsContract.CommonDataKinds.Event.TYPE_OTHER:
                                         other = dataCursor.getString(dataCursor.getColumnIndex("data1"));
+                                        other = formatThisDate(other);
                                 }
 
                             }
@@ -458,7 +463,6 @@ public class HomeFragment extends Fragment {
 
 
                         } while (dataCursor.moveToNext());
-                        dataCursor.close();
 
 
                         String details = "";
@@ -480,23 +484,25 @@ public class HomeFragment extends Fragment {
                         }
                         if (workPhone != null && !workPhone.equals("")) {
                             details += "WorkPhone : " + workPhone + "\n";
-
-
                         }
+                        String dateDetails = null;
                         if (birthdate != null && !birthdate.equals("")) {
                             details += "Birthdate : " + birthdate + "\n";
-
+                            dateDetails = "Birthdate : " + birthdate + "\n";
                         }
                         if (anniversary != null && !anniversary.equals("")) {
                             details += "anniversary : " + anniversary + "\n";
-
+                            dateDetails += "anniversary : " + anniversary;
+                        }else{
+                            dateDetails += "\n";
                         }
+
                         if (other != null && !other.equals("")) {
                             details += "other date: " + other + "\n";
                         }
 
                         // Adding id, display name, path to photo and other details to cursor
-                        if (isBirthday) {
+                        //if (isBirthday) {
 
                             values.put(ContactsManagerContract.ContactsEntry.COLUMN_NAME_ENTRY_ID, contactId);
                             values.put(ContactsManagerContract.ContactsEntry.COLUMN_NAME_NAME, displayName);
@@ -517,40 +523,57 @@ public class HomeFragment extends Fragment {
                             );
 
 
-                            if(!bool_adapter){
+                            if (!bool_adapter) {
                                 myMatrixCursorRefresh.addRow(new Object[]{
                                         Long.toString(contactId),
                                         contactId,
                                         displayName,
-                                        details
+                                        dateDetails
                                 });
 
                                 //bool_adapter = true;
-                            }else {
+                            } else {
 
                                 myMatrixCursor.addRow(new Object[]{
                                         Long.toString(contactId),
                                         displayName,
                                         //photoPath,
-                                        details});
+                                        dateDetails});
                             }
                         }
-                    }
+                        dataCursor.close();
+
+//                    }
                 } while (contactsCursor.moveToNext());
                 contactsCursor.close();
 
                 db.close();
             }
 
-            if(!bool_adapter){
+            if (!bool_adapter) {
                 //myAdapterRefresh.notifyDataSetChanged(); //caused error
                 return myMatrixCursorRefresh;
-            }else {
+            } else {
                 //myAdapter.notifyDataSetChanged(); //caused error
                 return myMatrixCursor;
             }
         }
 
+        private  String formatThisDate(String birthdate){
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault());
+            Locale locale = Locale.getDefault();
+
+            for (int i = 0; i < inputFormats.length; i++) {
+                try{
+                    return dateFormat
+                            .format(new SimpleDateFormat(inputFormats[i], locale).parse(birthdate));
+                }catch (ParseException e){
+                    e.getMessage();
+
+                }
+            }
+            return null;
+        }
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -563,12 +586,12 @@ public class HomeFragment extends Fragment {
             // Setting the cursor containing contacts to listview
             //home_spinner.setVisibility(GONE);
 
-            if(!bool_adapter){
+            if (!bool_adapter) {
 
                 myMatrixCursorRefresh.close();
                 myAdapterRefresh.swapCursor(result);
 
-            }else {
+            } else {
 
                 myMatrixCursor.close();
                 myAdapter.swapCursor(result);
@@ -583,7 +606,7 @@ public class HomeFragment extends Fragment {
         protected Cursor doInBackground(Void... voids) {
             contactsManagerHelper = new ContactsManagerHelper(context);
             db = contactsManagerHelper.getReadableDatabase();
-            String sortOrder = ContactsManagerContract.ContactsEntry.COLUMN_NAME_NAME + " ASC";
+            String sortOrder = "UPPER(" +ContactsManagerContract.ContactsEntry.COLUMN_NAME_NAME + ") ASC";
             Cursor cursor = db.query(
                     TABLE_NAME,
                     null,
@@ -595,7 +618,7 @@ public class HomeFragment extends Fragment {
             );
 
             cursor.moveToFirst();
-            while (cursor.moveToNext()) {
+            do {
                 long Id = cursor.getLong(
                         cursor.getColumnIndexOrThrow(ContactsManagerContract.ContactsEntry._ID)
                 );
@@ -605,7 +628,12 @@ public class HomeFragment extends Fragment {
                         .getColumnIndexOrThrow(ContactsManagerContract.ContactsEntry.COLUMN_NAME_BIRTHDAY));
                 String annie = cursor.getString(cursor
                         .getColumnIndexOrThrow(ContactsManagerContract.ContactsEntry.COLUMN_NAME_ANNIE));
-                String details = "Birthdate : " + bday + "\n" + "Annieversary: " + annie;
+                String details = null;
+                if(annie != null && !annie.equals("")) {
+                    details = "Birthdate : " + bday + "\n" + "Annieversary: " + annie;
+                }else{
+                    details = "Birthdate : " + bday + "\n" + "\n";
+                }
                 Long contact_id = cursor.getLong(cursor
                         .getColumnIndexOrThrow(ContactsManagerContract.ContactsEntry.COLUMN_NAME_ENTRY_ID));
                 myMatrixCursor.addRow(new Object[]{
@@ -614,7 +642,7 @@ public class HomeFragment extends Fragment {
                         name,
                         //photoPath,
                         details});
-            }
+            }while (cursor.moveToNext());
             cursor.close();
             db.close();
 
@@ -653,6 +681,7 @@ public class HomeFragment extends Fragment {
         unbindDrawables(rootView.findViewById(R.id.swiperefresh_home));
         System.gc();
     }
+
     //this method is from stackoverflow
     //http://stackoverflow.com/questions/1147172/what-android-tools-and-methods-work-best-to-find-memory-resource-leaks
     //thanks to hp.android
@@ -663,11 +692,11 @@ public class HomeFragment extends Fragment {
         if (view.getBackground() != null) {
             view.getBackground().setCallback(null);
         }
-        if (view instanceof ViewGroup ) {
+        if (view instanceof ViewGroup) {
             for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
                 unbindDrawables(((ViewGroup) view).getChildAt(i));
             }
-            if(!(view instanceof AdapterView)) {
+            if (!(view instanceof AdapterView)) {
                 ((ViewGroup) view).removeAllViews();
             }
 

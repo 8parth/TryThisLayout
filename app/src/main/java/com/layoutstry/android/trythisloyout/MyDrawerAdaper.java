@@ -1,7 +1,6 @@
 package com.layoutstry.android.trythisloyout;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,13 +63,13 @@ public class MyDrawerAdaper extends BaseAdapter{
         mViewHolder.ivIcon.setImageResource(images[position]);
 
         //Highlight the selected list item
-        if (position == selectedposition[0]) {
+        /*if (position == selectedposition[0]) {
             convertView.setBackgroundColor(Color.WHITE);
             mViewHolder.tvTitle.setTextColor(Color.BLUE);
         } else {
             convertView.setBackgroundColor(Color.TRANSPARENT);
             mViewHolder.tvTitle.setTextColor(Color.WHITE);
-        }
+        }*/
 
         return convertView;
     }

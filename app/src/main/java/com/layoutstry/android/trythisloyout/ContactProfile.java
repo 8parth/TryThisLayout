@@ -59,13 +59,22 @@ public class ContactProfile extends ActionBarActivity {
         String id;
             Bundle b = getIntent().getExtras();
             id = b.getString("contact_id");
-        Toast.makeText(context, "contact id " + id, Toast.LENGTH_SHORT).show();
+
         Long x = Long.parseLong(id);
-        //Toast.makeText(getApplicationContext(), "contact id " + id, Toast.LENGTH_SHORT).show();
+
         getSpecificContact(x);
         //getSpecificContactPhoto(x);
 
 
+        //
+        /*Bitmap my_btmp = loadContactPhoto(getContentResolver(),Long.parseLong(id));
+        if(my_btmp!=null) {
+            System.out.println("my_btmp is not null");
+            ImageView profileImage = (ImageView) findViewById(R.id.profile_image);
+            profileImage.setImageBitmap(my_btmp);
+        }*/
+        //
+        //
         InputStream photoStream;
         BufferedInputStream buf;
         photoStream = openDisplayPhoto(x);
@@ -165,7 +174,7 @@ public class ContactProfile extends ActionBarActivity {
             do {
                 if (contactCursor.getString(contactCursor.getColumnIndex("mimetype"))
                         .equals(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)) {
-                    Toast.makeText(context, "contact id " + id + "has phones", Toast.LENGTH_SHORT).show();
+
                     switch (contactCursor.getInt(contactCursor.getColumnIndex("data2"))) {
                         case ContactsContract.CommonDataKinds.Phone.TYPE_HOME:
                             homePhone = contactCursor.getString(contactCursor.getColumnIndex("data1"));
@@ -204,9 +213,7 @@ public class ContactProfile extends ActionBarActivity {
 
     }
 
-    private void getNumbers(Long id){
 
-    }
 /*
 
     @Override
@@ -231,13 +238,14 @@ public class ContactProfile extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        /*if (id == R.id.action_settings) {
             return true;
-        }
+        }*/
 
         return super.onOptionsItemSelected(item);
     }
 
+    //lastly used till 15_08_2015
     public InputStream openDisplayPhoto(long contactId) {
         //Uri contactUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactId);
         //Uri displayPhotoUri = Uri.withAppendedPath(contactUri, ContactsContract.Contacts.PHOTO_URI);
@@ -263,6 +271,17 @@ public class ContactProfile extends ActionBarActivity {
             return null;
         }
     }
+
+    ///new and suppported by api 5
+    /*public static Bitmap loadContactPhoto(ContentResolver cr, long id) {
+        Uri uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, id);
+        InputStream input = ContactsContract.Contacts.openContactPhotoInputStream(cr, uri);
+        if (input == null) {
+            return null;
+            //return getBitmapFromURL("http://thinkandroid.wordpress.com");
+        }
+        return BitmapFactory.decodeStream(input);
+    }*/
 
     @Override
     protected void onDestroy() {

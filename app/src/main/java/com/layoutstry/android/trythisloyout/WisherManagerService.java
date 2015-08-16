@@ -60,7 +60,7 @@ public class WisherManagerService extends IntentService {
         if (getApplicationContext().getDatabasePath(ContactsManagerHelper.DATABASE_NAME).exists()) {
             ContactsManagerHelper managerHelper = new ContactsManagerHelper(getApplicationContext());
             home_db = managerHelper.getReadableDatabase();
-            String sort_order = ContactsManagerContract.ContactsEntry.COLUMN_NAME_NAME + " ASC";
+            String sort_order = "UPPER(" +ContactsManagerContract.ContactsEntry.COLUMN_NAME_NAME + ") ASC";
 
 
             Cursor c = home_db.query(

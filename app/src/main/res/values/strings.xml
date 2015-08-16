@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">Wisher</string>
 
-    <string name="title_section1">Home</string>
+    <string name="title_section1">Birthdays</string>
     <string name="title_section2">All birthdays</string>
-    <string name="title_section3">This week</string>
+    <string name="title_section3">About</string>
     <string name="title_section4">See calendar</string>
     <string name="no_contacts">No contacts with birthdays are found!</string>
 
@@ -47,9 +47,14 @@
 
     <string name="hello_world">Hello world!</string>
 
-    <string name="about_me">
-
+    <string name="app_tagline">
+        An android app which will never let you forget any birthday, annieversary or any important dates. Ever.
     </string>
+    <string name="about_app">
+        This is an open - source android project.
+        You can report any issues or request features on <a href="https://github.com/8parth/TryThisLayout">Wisher GitHub repository</a>
+    </string>
+    <string name="licence_icons8">Icons credit: <a href="https://icons8.com/android-L">Free icons by Icons8</a></string>
     <string name="contact_profile_name">Contact Name</string>
     <string name="title_activity_contact_profile">ContactProfile</string>
 

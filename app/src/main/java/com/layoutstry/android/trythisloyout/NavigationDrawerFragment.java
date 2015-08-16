@@ -104,16 +104,16 @@ public class NavigationDrawerFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //
                 if(position == 0) {
-                    images[0] = R.drawable.home_blue;
-                    images[1] = R.drawable.mail_yellow;
+                    images[0] = R.drawable.birthday_cake;
+                    images[1] = R.drawable.ic_android_black;
                     images[2] = R.drawable.settings_yellow;
                 } /*else if(position == 1) {
                     images[0] = R.drawable.home_blue;
                     images[1] = R.drawable.mail_yellow;
                     images[2] = R.drawable.settings_yellow;
                 } */else if(position == 1) {
-                    images[0] = R.drawable.home_blue;
-                    images[1] = R.drawable.mail_yellow;
+                    images[0] = R.drawable.birthday_cake;
+                    images[1] = R.drawable.ic_android_black;
                     images[2] = R.drawable.settings_yellow;
                 }
 
@@ -130,8 +130,8 @@ public class NavigationDrawerFragment extends Fragment {
         };
 
         images = new int[] {
-                R.drawable.home_blue,
-                R.drawable.mail_yellow,
+                R.drawable.birthday_cake,
+                R.drawable.ic_person_black,
                 R.drawable.settings_yellow,
         };
 
