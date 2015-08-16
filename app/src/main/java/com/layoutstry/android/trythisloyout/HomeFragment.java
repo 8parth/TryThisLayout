@@ -188,7 +188,7 @@ public class HomeFragment extends Fragment {
                         // The method calls setRefreshing(false) when it's finished.
                         if (updateDB()) {
                             //Toast.makeText(context, "DB updated in swipe", Toast.LENGTH_SHORT).show();
-                            System.out.println("DB updated in swipe");
+
                         }
                     }
                 }
@@ -383,7 +383,7 @@ public class HomeFragment extends Fragment {
                             null,
                             null);
 
-                    System.out.println(ContactsContract.CommonDataKinds.Event.START_DATE);
+
                     displayName = "";
                     homePhone = "";
                     mobilePhone = "";
@@ -536,6 +536,7 @@ public class HomeFragment extends Fragment {
 
                                 myMatrixCursor.addRow(new Object[]{
                                         Long.toString(contactId),
+                                        contactId,
                                         displayName,
                                         //photoPath,
                                         dateDetails});
