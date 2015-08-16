@@ -37,14 +37,15 @@ public class MailFragment extends Fragment {
         TextView aboutApp = (TextView) v.findViewById(R.id.about_app_id);
         aboutApp.setText(Html.fromHtml("<p>This is an open - source android project.<p>" +
                 "<p>You can report any issues or request features on " +
-                "<a href=\"https://github.com/8parth/TryThisLayout\">Wisher GitHub repository</a></p>"));
+                "<a href=\"https://toknowtoshare.wordpress.com/2015/08/16/wisher-an-app-which-will-never-let-you-forget-birthdays-ever\">Wisher</a></p>"));
         Linkify.addLinks(aboutApp, Linkify.ALL);
         aboutApp.setMovementMethod(LinkMovementMethod.getInstance());
-
+/*
         TextView licenceIcon = (TextView) v.findViewById(R.id.licence_icons8_id);
         licenceIcon.setText(Html.fromHtml("<p>Icons credit: <a href=\"https://icons8.com/android-L\">Free icons by Icons8</a></p>"));
+        licenceIcon.setVisibility(View.VISIBLE);
         Linkify.addLinks(licenceIcon, Linkify.ALL);
-        licenceIcon.setMovementMethod(LinkMovementMethod.getInstance());
+        licenceIcon.setMovementMethod(LinkMovementMethod.getInstance());*/
         return rootView;
     }
 
