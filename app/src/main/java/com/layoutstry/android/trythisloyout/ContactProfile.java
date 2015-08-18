@@ -53,7 +53,7 @@ public class ContactProfile extends ActionBarActivity {
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        Intent i = getIntent();
+        //Intent i = getIntent();
 
         //String id = i.getStringExtra("contact_id");
         String id;

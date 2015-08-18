@@ -12,7 +12,8 @@
         android:layout_height="fill_parent"
         android:layout_margin="10dp"
         android:layout_weight="0.5"
-        android:src="@drawable/birthday_cake"/>
+        android:src="@drawable/birthday_cake"
+        android:contentDescription="Img"/>
     <!--android:layout_weight=".5"-->
     <TextView
         android:id="@+id/textView1"

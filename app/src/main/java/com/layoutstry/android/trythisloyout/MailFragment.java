@@ -21,8 +21,8 @@ public class MailFragment extends Fragment {
     private View v;
 
     public static MailFragment newInstance() {
-        MailFragment fragment = new MailFragment();
-        return fragment;
+        //MailFragment fragment = new MailFragment();
+        return new MailFragment();
     }
 
     public MailFragment() {

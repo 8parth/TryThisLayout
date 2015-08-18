@@ -102,23 +102,23 @@ public class NavigationDrawerFragment extends Fragment {
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //
-                if(position == 0) {
+                //used to change icons when clicked that row containing icons
+                /*if(position == 0) {
                     images[0] = R.drawable.birthday_cake;
                     images[1] = R.drawable.ic_android_black;
                     images[2] = R.drawable.settings_yellow;
-                } /*else if(position == 1) {
+                } *//*else if(position == 1) {
                     images[0] = R.drawable.home_blue;
                     images[1] = R.drawable.mail_yellow;
                     images[2] = R.drawable.settings_yellow;
-                } */else if(position == 1) {
+                } *//*else if(position == 1) {
                     images[0] = R.drawable.birthday_cake;
                     images[1] = R.drawable.ic_android_black;
                     images[2] = R.drawable.settings_yellow;
-                }
+                }*/
 
                 selectedposition[0] = position;
-                mMyDrawerAdaper.notifyDataSetChanged();
+                //mMyDrawerAdaper.notifyDataSetChanged();
                 selectItem(position);
             }
         });
@@ -126,7 +126,7 @@ public class NavigationDrawerFragment extends Fragment {
         titles = new String[] {
                 getString(R.string.title_section1),/*
                 getString(R.string.title_section2),*/
-                getString(R.string.title_section3),
+                getString(R.string.title_section3)
         };
 
         images = new int[] {
@@ -140,17 +140,17 @@ public class NavigationDrawerFragment extends Fragment {
         mMyDrawerAdaper = new MyDrawerAdaper(activity, titles, images, selectedposition);
         mDrawerListView.setAdapter( mMyDrawerAdaper );
 
-        /*
-        mDrawerListView.setAdapter(new ArrayAdapter<String>(
+
+       /* mDrawerListView.setAdapter(new ArrayAdapter<String>(
                 getActionBar().getThemedContext(),
                 android.R.layout.simple_list_item_1,
                 android.R.id.text1,
                 new String[]{
                         getString(R.string.title_section1),
-                        getString(R.string.title_section2),
-                        getString(R.string.title_section3),
+                        //getString(R.string.title_section2),
+                        getString(R.string.title_section3)
                 }));
-        */
+*/
 
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
         return mDrawerListView;
@@ -329,7 +329,7 @@ public class NavigationDrawerFragment extends Fragment {
     /**
      * Callbacks interface that all activities using this fragment must implement.
      */
-    public static interface NavigationDrawerCallbacks {
+    public interface NavigationDrawerCallbacks {
         /**
          * Called when an item in the navigation drawer is selected.
          */

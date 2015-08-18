@@ -347,7 +347,7 @@ public class HomeFragment extends Fragment {
                     null,
                     ContactsContract.Contacts.HAS_PHONE_NUMBER + "=1",
                     null,
-                    "UPPER(" +ContactsContract.Contacts.DISPLAY_NAME + ") COLLATE LOCALIZED ASC");
+                    "UPPER(" + ContactsContract.Contacts.DISPLAY_NAME + ") COLLATE LOCALIZED ASC");
 
             if (contactsCursor.moveToFirst()) {
                 do {
@@ -370,11 +370,11 @@ public class HomeFragment extends Fragment {
                     //ContactsContract.Data.CONTENT_TYPE
                     String selection =
                             ContactsContract.Data.CONTACT_ID + "=" + contactId
-                                    +" AND "
-                                    +ContactsContract.Data.MIMETYPE + "= '"
+                                    + " AND "
+                                    + ContactsContract.Data.MIMETYPE + "= '"
                                     + ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE + "' AND "
                                     + ContactsContract.CommonDataKinds.Event.TYPE + "=" + ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY;
-                                    //+" AND " +ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE +"=" +ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY;
+                    //+" AND " +ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE +"=" +ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY;
 
                     Cursor dataCursor = activity.getContentResolver().query(
                             dataUri,
@@ -397,7 +397,7 @@ public class HomeFragment extends Fragment {
                     other = "";
 
 
-                    if (dataCursor.moveToFirst()) {
+                    if (dataCursor.getCount() > 0) {
                         dataCursor.moveToFirst();
                         // Getting Display name
                         displayName = dataCursor.getString(dataCursor
@@ -409,7 +409,6 @@ public class HomeFragment extends Fragment {
                             if (dataCursor.getString(dataCursor.getColumnIndex("mimetype"))
                                     .equals(ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE)) {
                                 isBirthday = true;
-
 
 
                                 switch (dataCursor.getInt(dataCursor.getColumnIndex("data2"))) {
@@ -493,7 +492,7 @@ public class HomeFragment extends Fragment {
                         if (anniversary != null && !anniversary.equals("")) {
                             details += "anniversary : " + anniversary + "\n";
                             dateDetails += "anniversary : " + anniversary;
-                        }else{
+                        } else {
                             dateDetails += "\n";
                         }
 
@@ -504,45 +503,66 @@ public class HomeFragment extends Fragment {
                         // Adding id, display name, path to photo and other details to cursor
                         //if (isBirthday) {
 
-                            values.put(ContactsManagerContract.ContactsEntry.COLUMN_NAME_ENTRY_ID, contactId);
-                            values.put(ContactsManagerContract.ContactsEntry.COLUMN_NAME_NAME, displayName);
+                        values.put(ContactsManagerContract.ContactsEntry.COLUMN_NAME_ENTRY_ID, contactId);
+                        values.put(ContactsManagerContract.ContactsEntry.COLUMN_NAME_NAME, displayName);
 
-                            values.put(ContactsManagerContract.ContactsEntry.COLUMN_NAME_NUMBER, homePhone);
-                            values.put(ContactsManagerContract.ContactsEntry.COLUMN_NAME_BIRTHDAY, birthdate);
-                            if (!isPhone) {
-                                values.put(ContactsManagerContract.ContactsEntry.COLUMN_NAME_NUMBER, mobilePhone);
-                                isPhone = true;
-                            }
-                            values.put(ContactsManagerContract.ContactsEntry.COLUMN_NAME_ANNIE, anniversary);
-                            values.put(COLUMN_NAME_OTHER, other);
-
-                            db.insert(
-                                    TABLE_NAME,
-                                    COLUMN_NAME_OTHER,
-                                    values
-                            );
-
-
-                            if (!bool_adapter) {
-                                myMatrixCursorRefresh.addRow(new Object[]{
-                                        Long.toString(contactId),
-                                        contactId,
-                                        displayName,
-                                        dateDetails
-                                });
-
-                                //bool_adapter = true;
-                            } else {
-
-                                myMatrixCursor.addRow(new Object[]{
-                                        Long.toString(contactId),
-                                        contactId,
-                                        displayName,
-                                        //photoPath,
-                                        dateDetails});
-                            }
+                        values.put(ContactsManagerContract.ContactsEntry.COLUMN_NAME_NUMBER, homePhone);
+                        values.put(ContactsManagerContract.ContactsEntry.COLUMN_NAME_BIRTHDAY, birthdate);
+                        if (!isPhone) {
+                            values.put(ContactsManagerContract.ContactsEntry.COLUMN_NAME_NUMBER, mobilePhone);
+                            isPhone = true;
                         }
-                        dataCursor.close();
+                        values.put(ContactsManagerContract.ContactsEntry.COLUMN_NAME_ANNIE, anniversary);
+                        values.put(COLUMN_NAME_OTHER, other);
+
+                        db.insert(
+                                TABLE_NAME,
+                                COLUMN_NAME_OTHER,
+                                values
+                        );
+
+
+                        if (!bool_adapter) {
+                            myMatrixCursorRefresh.addRow(new Object[]{
+                                    Long.toString(contactId),
+                                    contactId,
+                                    displayName,
+                                    dateDetails
+                            });
+
+                            //bool_adapter = true;
+                        } else {
+
+                            myMatrixCursor.addRow(new Object[]{
+                                    Long.toString(contactId),
+                                    contactId,
+                                    displayName,
+                                    //photoPath,
+                                    dateDetails});
+                        }
+                    } else { // else for if(dataCursor.getCount()>0)
+                        if (!bool_adapter) {
+                            myMatrixCursorRefresh.addRow(new Object[]{
+                                    Long.toString(-1),
+                                    -1,
+                                    "No contacts with birthdays found !",
+                                    null
+                            });
+
+                            //bool_adapter = true;
+                        } else {
+
+                            myMatrixCursor.addRow(new Object[]{
+                                    Long.toString(-1),
+                                    -1,
+                                    "No contacts with birthdays found !",
+                                    //photoPath,
+                                    null});
+                        }
+                    }        // big else closed
+
+
+                    dataCursor.close();
 
 //                    }
                 } while (contactsCursor.moveToNext());
@@ -560,21 +580,22 @@ public class HomeFragment extends Fragment {
             }
         }
 
-        private  String formatThisDate(String birthdate){
+        private String formatThisDate(String birthdate) {
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault());
             Locale locale = Locale.getDefault();
 
             for (int i = 0; i < inputFormats.length; i++) {
-                try{
+                try {
                     return dateFormat
                             .format(new SimpleDateFormat(inputFormats[i], locale).parse(birthdate));
-                }catch (ParseException e){
+                } catch (ParseException e) {
                     e.getMessage();
 
                 }
             }
             return null;
         }
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -607,7 +628,7 @@ public class HomeFragment extends Fragment {
         protected Cursor doInBackground(Void... voids) {
             contactsManagerHelper = new ContactsManagerHelper(context);
             db = contactsManagerHelper.getReadableDatabase();
-            String sortOrder = "UPPER(" +ContactsManagerContract.ContactsEntry.COLUMN_NAME_NAME + ") ASC";
+            String sortOrder = "UPPER(" + ContactsManagerContract.ContactsEntry.COLUMN_NAME_NAME + ") ASC";
             Cursor cursor = db.query(
                     TABLE_NAME,
                     null,
@@ -617,33 +638,40 @@ public class HomeFragment extends Fragment {
                     null,
                     sortOrder
             );
-
-            cursor.moveToFirst();
-            do {
-                long Id = cursor.getLong(
-                        cursor.getColumnIndexOrThrow(ContactsManagerContract.ContactsEntry._ID)
-                );
-                String name = cursor.getString(cursor
-                        .getColumnIndexOrThrow(ContactsManagerContract.ContactsEntry.COLUMN_NAME_NAME));
-                String bday = cursor.getString(cursor
-                        .getColumnIndexOrThrow(ContactsManagerContract.ContactsEntry.COLUMN_NAME_BIRTHDAY));
-                String annie = cursor.getString(cursor
-                        .getColumnIndexOrThrow(ContactsManagerContract.ContactsEntry.COLUMN_NAME_ANNIE));
-                String details = null;
-                if(annie != null && !annie.equals("")) {
-                    details = "Birthdate : " + bday + "\n" + "Annieversary: " + annie;
-                }else{
-                    details = "Birthdate : " + bday + "\n" + "\n";
-                }
-                Long contact_id = cursor.getLong(cursor
-                        .getColumnIndexOrThrow(ContactsManagerContract.ContactsEntry.COLUMN_NAME_ENTRY_ID));
+            if(cursor.getCount()>0) {
+                cursor.moveToFirst();
+                do {
+                    long Id = cursor.getLong(
+                            cursor.getColumnIndexOrThrow(ContactsManagerContract.ContactsEntry._ID)
+                    );
+                    String name = cursor.getString(cursor
+                            .getColumnIndexOrThrow(ContactsManagerContract.ContactsEntry.COLUMN_NAME_NAME));
+                    String bday = cursor.getString(cursor
+                            .getColumnIndexOrThrow(ContactsManagerContract.ContactsEntry.COLUMN_NAME_BIRTHDAY));
+                    String annie = cursor.getString(cursor
+                            .getColumnIndexOrThrow(ContactsManagerContract.ContactsEntry.COLUMN_NAME_ANNIE));
+                    String details = null;
+                    if (annie != null && !annie.equals("")) {
+                        details = "Birthdate : " + bday + "\n" + "Annieversary: " + annie;
+                    } else {
+                        details = "Birthdate : " + bday + "\n" + "\n";
+                    }
+                    Long contact_id = cursor.getLong(cursor
+                            .getColumnIndexOrThrow(ContactsManagerContract.ContactsEntry.COLUMN_NAME_ENTRY_ID));
+                    myMatrixCursor.addRow(new Object[]{
+                            Long.toString(Id),
+                            contact_id,
+                            name,
+                            //photoPath,
+                            details});
+                } while (cursor.moveToNext());
+            }else{
                 myMatrixCursor.addRow(new Object[]{
-                        Long.toString(Id),
-                        contact_id,
-                        name,
-                        //photoPath,
-                        details});
-            }while (cursor.moveToNext());
+                        Long.toString(-1),
+                        -1,
+                        "No contacts with birthdays found !",
+                        null});
+            }
             cursor.close();
             db.close();
 

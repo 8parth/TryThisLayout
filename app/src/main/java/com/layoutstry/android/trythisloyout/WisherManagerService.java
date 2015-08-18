@@ -73,23 +73,24 @@ public class WisherManagerService extends IntentService {
                     sort_order
             );
 
-            c.moveToFirst();
-            do {
-                long Id = c.getLong(
-                        c.getColumnIndexOrThrow(ContactsManagerContract.ContactsEntry._ID)
-                );
-                String name = c.getString(c
-                        .getColumnIndexOrThrow(ContactsManagerContract.ContactsEntry.COLUMN_NAME_NAME));
-                String bday = c.getString(c
-                        .getColumnIndexOrThrow(ContactsManagerContract.ContactsEntry.COLUMN_NAME_BIRTHDAY));
-                String annie = c.getString(c
-                        .getColumnIndexOrThrow(ContactsManagerContract.ContactsEntry.COLUMN_NAME_ANNIE));
-                String number = c.getString(c
-                        .getColumnIndexOrThrow(ContactsManagerContract.ContactsEntry.COLUMN_NAME_NUMBER));
-                if (bday.equalsIgnoreCase(toDay)) {
-                    notifyUserAboutBirthday(name, number);
-                }
-            } while (c.moveToNext());
+            if(c.moveToFirst()) {
+                do {
+                    long Id = c.getLong(
+                            c.getColumnIndexOrThrow(ContactsManagerContract.ContactsEntry._ID)
+                    );
+                    String name = c.getString(c
+                            .getColumnIndexOrThrow(ContactsManagerContract.ContactsEntry.COLUMN_NAME_NAME));
+                    String bday = c.getString(c
+                            .getColumnIndexOrThrow(ContactsManagerContract.ContactsEntry.COLUMN_NAME_BIRTHDAY));
+                    String annie = c.getString(c
+                            .getColumnIndexOrThrow(ContactsManagerContract.ContactsEntry.COLUMN_NAME_ANNIE));
+                    String number = c.getString(c
+                            .getColumnIndexOrThrow(ContactsManagerContract.ContactsEntry.COLUMN_NAME_NUMBER));
+                    if (bday.equalsIgnoreCase(toDay)) {
+                        notifyUserAboutBirthday(name, number);
+                    }
+                } while (c.moveToNext());
+            }
             c.close();
             home_db.close();
         }
