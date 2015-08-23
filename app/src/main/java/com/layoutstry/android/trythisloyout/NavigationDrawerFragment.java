@@ -130,8 +130,8 @@ public class NavigationDrawerFragment extends Fragment {
         };
 
         images = new int[] {
-                R.drawable.birthday_cake,
-                R.drawable.ic_person_black,
+                R.mipmap.bday_cake,
+                R.mipmap.user,
                 R.drawable.settings_yellow,
         };
 

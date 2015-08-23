@@ -49,6 +49,6 @@
             android:text="@string/licence_icons8"
             android:textColor="@color/bright_foreground_material_light"
             android:textSize="20sp"
-            android:visibility="invisible"/>
+            android:visibility="visible"/>
     </RelativeLayout>
 </ScrollView>

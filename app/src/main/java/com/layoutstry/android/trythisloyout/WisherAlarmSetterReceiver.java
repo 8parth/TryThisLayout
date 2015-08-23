@@ -9,7 +9,7 @@ import android.content.Intent;
 import java.util.Calendar;
 
 /**
- * Created by User on 27-07-2015.
+ * Created by user on 27-07-2015.
  */
 public class WisherAlarmSetterReceiver extends BroadcastReceiver {
     //private PendingIntent pendingIntent;

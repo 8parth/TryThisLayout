@@ -7,12 +7,13 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -24,8 +25,8 @@ import static com.layoutstry.android.trythisloyout.ContactsManagerContract.Conta
  * Notice that the other callbacks of a regular Service component,
  * such as onStartCommand() are automatically invoked by IntentService.
  * In an IntentService, you should avoid overriding these callbacks.
- * <p>
- * <p>
+ * <p/>
+ * <p/>
  * An IntentService also needs an entry in your application manifest.
  * Provide this entry as a <service> element that's a child of the <application> element
  */
@@ -41,7 +42,7 @@ public class WisherManagerService extends IntentService {
     }
 
     @Override
-    protected void onHandleIntent(Intent intent) {
+    protected void onHandleIntent(Intent intent)throws NullPointerException{
         // Gets data from the incoming intent
         //String dataString = workIntent.getDataString();
         SQLiteDatabase home_db;
@@ -60,7 +61,7 @@ public class WisherManagerService extends IntentService {
         if (getApplicationContext().getDatabasePath(ContactsManagerHelper.DATABASE_NAME).exists()) {
             ContactsManagerHelper managerHelper = new ContactsManagerHelper(getApplicationContext());
             home_db = managerHelper.getReadableDatabase();
-            String sort_order = "UPPER(" +ContactsManagerContract.ContactsEntry.COLUMN_NAME_NAME + ") ASC";
+            String sort_order = "UPPER(" + ContactsManagerContract.ContactsEntry.COLUMN_NAME_NAME + ") ASC";
 
 
             Cursor c = home_db.query(
@@ -73,21 +74,22 @@ public class WisherManagerService extends IntentService {
                     sort_order
             );
 
-            if(c.moveToFirst()) {
+            if (c.moveToFirst()) {
                 do {
                     long Id = c.getLong(
-                            c.getColumnIndexOrThrow(ContactsManagerContract.ContactsEntry._ID)
+                            c.getColumnIndexOrThrow(ContactsManagerContract.ContactsEntry.COLUMN_NAME_ENTRY_ID)
                     );
                     String name = c.getString(c
                             .getColumnIndexOrThrow(ContactsManagerContract.ContactsEntry.COLUMN_NAME_NAME));
                     String bday = c.getString(c
                             .getColumnIndexOrThrow(ContactsManagerContract.ContactsEntry.COLUMN_NAME_BIRTHDAY));
-                    String annie = c.getString(c
-                            .getColumnIndexOrThrow(ContactsManagerContract.ContactsEntry.COLUMN_NAME_ANNIE));
-                    String number = c.getString(c
-                            .getColumnIndexOrThrow(ContactsManagerContract.ContactsEntry.COLUMN_NAME_NUMBER));
+
+                    bday = formatThisDateStripOffYears(bday);
+                    toDay = formatThisDateStripOffYears(toDay);
+
                     if (bday.equalsIgnoreCase(toDay)) {
-                        notifyUserAboutBirthday(name, number);
+
+                        notifyUserAboutBirthday(name, Id);
                     }
                 } while (c.moveToNext());
             }
@@ -96,29 +98,32 @@ public class WisherManagerService extends IntentService {
         }
     }
 
-    private Long getContactId(String name,String number){
-        Long id;
-        Uri contactsUri = ContactsContract.Contacts.CONTENT_URI;
-        String[] selectionArgs = {
+    private String formatThisDateStripOffYears(String birthdate) {
 
-        };
-        String selection = ContactsContract.Contacts.DISPLAY_NAME +" = " +name;
-        Cursor contactsCursor = getContentResolver().query(
-                contactsUri,
-                null,
-                selection,
-                null,
-                null
-        );
-        id = contactsCursor.getLong(contactsCursor.getColumnIndex("_ID"));
-        contactsCursor.close();
-    return id;
+        Locale locale = Locale.getDefault();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM", locale);
+
+
+
+        try {
+            return dateFormat
+                    .format(new SimpleDateFormat("dd MMMM yyyy", locale).parse(birthdate));
+        } catch (ParseException e) {
+
+            e.getMessage();
+
+        }
+
+        return null;
     }
-    private void notifyUserAboutBirthday(String name, String number) {
+
+    private void notifyUserAboutBirthday(String name, Long id) {
 
 
         Bundle b = new Bundle();
-        Long id = getContactId(name, number);
+        //Long id = getContactId2(name, number);
+
+
         b.putString("contact_id", id.toString());
         Intent resultIntent = new Intent(this, ContactProfile.class);
         resultIntent.putExtras(b);
@@ -130,13 +135,16 @@ public class WisherManagerService extends IntentService {
         //Gets a PendingIntent containing entire back stack
         PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
+        //Define sound URI
+        Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
         NotificationCompat.Builder notifyBday = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.birthday_cake)
+                .setSmallIcon(R.mipmap.bday_cake)
+                .setSound(soundUri)
                 .setContentTitle("Wish " + name + " for birthday ;)")
                 .setContentText("P.S. have an amazing day. ")
                 .setAutoCancel(true);
-                //.setExtras(b);
+        //.setExtras(b);
 
         notifyBday.setContentIntent(resultPendingIntent);
 

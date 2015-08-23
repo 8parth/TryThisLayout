@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
- * Created by User on 28-04-2015.
+ * Created by user on 28-04-2015.
  */
 public class MyDrawerAdaper extends BaseAdapter{
 

@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.text.format.Time;
 
 /**
- * Created by User on 26-07-2015.
+ * Created by user on 26-07-2015.
  * BroadcastReceiver that will that receive Intents
  */
 
