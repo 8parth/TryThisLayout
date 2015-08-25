@@ -233,7 +233,6 @@ public class HomeFragment extends Fragment {
         v.findViewById(R.id.tv_no_contacts).setVisibility(View.VISIBLE);
     }
     private void setAlarmWisher(){
-        System.out.println("Setting alarmwisher...");
         PendingIntent pendingIntent;
         Intent wishIntent = new Intent(activity, WisherManagerReceiver.class);
         wishIntent.setAction(PACKAGENAME_ACTION);
@@ -251,18 +250,15 @@ public class HomeFragment extends Fragment {
         This reduces the drain on the battery.
         */
 
-        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,   //type of alarm
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,   //type of alarm
                 calendar.getTimeInMillis(),                         //setting time
                 AlarmManager.INTERVAL_DAY,                          //interval ex. when alarm has to be repeated
                 pendingIntent);                                     //intent to be fired
-
-        System.out.println("Setting setInexactRepeating... ");
 
         //Enabling the receiver programatically
         //WisherManagerReceiver.class
         //enableReceiver(context, "WisherManagerReceiver.class");
         enableReceiver(context);
-        System.out.println("Receiver Enabled");
 
     }
 

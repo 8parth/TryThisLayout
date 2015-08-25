@@ -5,7 +5,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.MatrixCursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -31,7 +30,7 @@ import static com.layoutstry.android.trythisloyout.ContactsManagerContract.Conta
  * Provide this entry as a <service> element that's a child of the <application> element
  */
 public class WisherManagerService extends IntentService {
-    private static boolean isAlreadyNotified;
+    //private static boolean isAlreadyNotified;
 
     public WisherManagerService() {
         super("service");
@@ -46,13 +45,13 @@ public class WisherManagerService extends IntentService {
         // Gets data from the incoming intent
         //String dataString = workIntent.getDataString();
         SQLiteDatabase home_db;
-        HomeFragment homeFragment = new HomeFragment();
-        MatrixCursor matrixCursor = new MatrixCursor(new String[]{
+        //HomeFragment homeFragment = new HomeFragment();
+        /*MatrixCursor matrixCursor = new MatrixCursor(new String[]{
                 "_id",
                 "name",
                 //"photo",
                 "details"});
-
+        */
         Calendar currentDate = Calendar.getInstance(); // Get the current date
         SimpleDateFormat formatter = new SimpleDateFormat(
                 "dd MMMM yyyy", Locale.getDefault()); // format it as per your requirement
@@ -102,19 +101,17 @@ public class WisherManagerService extends IntentService {
 
         Locale locale = Locale.getDefault();
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM", locale);
-
-
-
+        String temp;
         try {
-            return dateFormat
+            temp = dateFormat
                     .format(new SimpleDateFormat("dd MMMM yyyy", locale).parse(birthdate));
         } catch (ParseException e) {
 
             e.getMessage();
-
+            return birthdate;
         }
-
-        return null;
+        //return null;
+        return temp;
     }
 
     private void notifyUserAboutBirthday(String name, Long id) {
