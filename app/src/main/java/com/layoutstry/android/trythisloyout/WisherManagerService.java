@@ -31,7 +31,7 @@ import static com.layoutstry.android.trythisloyout.ContactsManagerContract.Conta
  */
 public class WisherManagerService extends IntentService {
     //private static boolean isAlreadyNotified;
-
+    private static int notifyId;
     public WisherManagerService() {
         super("service");
     }
@@ -58,6 +58,7 @@ public class WisherManagerService extends IntentService {
         String toDay = formatter.format(currentDate.getTime());
 
         if (getApplicationContext().getDatabasePath(ContactsManagerHelper.DATABASE_NAME).exists()) {
+            notifyId = 1;
             ContactsManagerHelper managerHelper = new ContactsManagerHelper(getApplicationContext());
             home_db = managerHelper.getReadableDatabase();
             String sort_order = "UPPER(" + ContactsManagerContract.ContactsEntry.COLUMN_NAME_NAME + ") ASC";
@@ -89,6 +90,7 @@ public class WisherManagerService extends IntentService {
                     if (bday.equalsIgnoreCase(toDay)) {
 
                         notifyUserAboutBirthday(name, Id);
+                        notifyId++;
                     }
                 } while (c.moveToNext());
             }
@@ -155,7 +157,7 @@ public class WisherManagerService extends IntentService {
 
         NotificationManager nm =
                 (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        nm.notify(001, notifyBday.build());
+        nm.notify(notifyId, notifyBday.build());
         //isAlreadyNotified = true;
     }
 
