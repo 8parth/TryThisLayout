@@ -213,7 +213,11 @@ public class HomeFragment extends Fragment {
         //service
         //setting alarm inside a method
         if(mySwipeRefreshLayout.getVisibility() == View.VISIBLE){
-            setAlarmWisher();
+            //setAlarmWisher();
+            enableReceiver(context);
+            if(!WisherAlarmSetterReceiver.isScheduled){
+                WisherAlarmSetterReceiver.scheduleWisherAlarm(context);
+            }
         }
 
     }
@@ -239,7 +243,7 @@ public class HomeFragment extends Fragment {
         pendingIntent = PendingIntent.getBroadcast(context, 0, wishIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, 4);
+        calendar.set(Calendar.HOUR_OF_DAY, 1);
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(pendingIntent);                         //this cancels previous alarms

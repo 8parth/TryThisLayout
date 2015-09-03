@@ -22,12 +22,16 @@
             <intent-filter>
                 <action android:name="com.layoutsstry.android.trythisloyout.ACTION" />
                 <action android:name="com.layoutsstry.android.trythisloyout.ACTION2" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
         <receiver
+            android:exported="false"
             android:name=".WisherAlarmSetterReceiver"
             android:enabled="false" > <!-- enable this programatically -->
             <intent-filter>
+                <action android:name="com.layoutsstry.android.trythisloyout.ACTION" />
+                <action android:name="com.layoutsstry.android.trythisloyout.ACTION2" />
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>

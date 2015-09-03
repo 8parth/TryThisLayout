@@ -97,6 +97,8 @@ public class WisherManagerService extends IntentService {
             c.close();
             home_db.close();
         }
+
+        WisherManagerReceiver.completeWakefulIntent(intent);
     }
 
     private String formatThisDateStripOffYears(String birthdate) {
